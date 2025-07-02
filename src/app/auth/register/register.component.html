@@ -1,0 +1,44 @@
+<form [formGroup]="registerForm" (ngSubmit)="register()" novalidate>
+  <h2>Registro de Usuario</h2>
+
+  <label for="nombre">Nombre completo</label>
+  <input id="nombre" type="text" formControlName="nombre" placeholder="Tu nombre completo" />
+  <div *ngIf="submitted && f['nombre'].errors" class="error-msg">
+    <small *ngIf="f['nombre'].errors['required']">El nombre es obligatorio.</small>
+  </div>
+
+  <label for="direccion">Dirección</label>
+  <input id="direccion" type="text" formControlName="direccion" placeholder="Tu dirección" />
+  <div *ngIf="submitted && f['direccion'].errors" class="error-msg">
+    <small *ngIf="f['direccion'].errors['required']">La dirección es obligatoria.</small>
+  </div>
+
+  <label for="fechaNacimiento">Fecha de nacimiento</label>
+  <input id="fechaNacimiento" type="date" formControlName="fechaNacimiento" />
+  <div *ngIf="submitted && f['fechaNacimiento'].errors" class="error-msg">
+    <small *ngIf="f['fechaNacimiento'].errors['required']">La fecha de nacimiento es obligatoria.</small>
+  </div>
+
+  <label for="email">Correo electrónico</label>
+  <input id="email" type="email" formControlName="email" placeholder="ejemplo@correo.com" />
+  <div *ngIf="submitted && f['email'].errors" class="error-msg">
+    <small *ngIf="f['email'].errors['required']">El correo es obligatorio.</small>
+    <small *ngIf="f['email'].errors['email']">Ingrese un correo válido.</small>
+  </div>
+
+  <label for="password">Contraseña</label>
+  <input id="password" type="password" formControlName="password" placeholder="Mínimo 6 caracteres" />
+  <div *ngIf="submitted && f['password'].errors" class="error-msg">
+    <small *ngIf="f['password'].errors['required']">La contraseña es obligatoria.</small>
+    <small *ngIf="f['password'].errors['minlength']">La contraseña debe tener al menos 6 caracteres.</small>
+  </div>
+
+  <label for="confirmPassword">Confirmar Contraseña</label>
+  <input id="confirmPassword" type="password" formControlName="confirmPassword" placeholder="Repita la contraseña" />
+  <div *ngIf="submitted && (f['confirmPassword'].errors || registerForm.errors?.['passwordsMismatch'])" class="error-msg">
+    <small *ngIf="f['confirmPassword'].errors?.['required']">Debe confirmar la contraseña.</small>
+    <small *ngIf="registerForm.errors?.['passwordsMismatch']">Las contraseñas no coinciden.</small>
+  </div>
+
+  <button type="submit" [disabled]="registerForm.invalid">Registrar</button>
+</form>

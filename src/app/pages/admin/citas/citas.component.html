@@ -1,0 +1,37 @@
+<div class="citas-container">
+  <h2>Solicitudes de Citas Pendientes</h2>
+
+  <div *ngIf="loading" class="loading">Cargando citas...</div>
+
+  <div *ngIf="!loading && citasPendientes.length === 0">
+    No hay citas pendientes por revisar.
+  </div>
+
+  <div *ngIf="!loading && citasPendientes.length > 0">
+    <table class="citas-table">
+      <thead>
+        <tr>
+          <th>Paciente</th>
+          <th>Médico</th>
+          <th>Fecha</th>
+          <th>Hora</th>
+          <th>Motivo</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let cita of citasPendientes">
+          <td>{{ cita.pacienteNombre }}</td>
+          <td>{{ cita.medicoNombre }}</td>
+          <td>{{ cita.fecha }}</td>
+          <td>{{ cita.hora }}</td>
+          <td>{{ cita.motivo }}</td>
+          <td>
+            <button (click)="confirmarCita(cita.id!)">Confirmar</button>
+            <button (click)="rechazarCita(cita.id!)" class="rechazar">Rechazar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

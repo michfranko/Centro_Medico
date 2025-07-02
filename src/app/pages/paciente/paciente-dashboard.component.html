@@ -1,0 +1,34 @@
+<!-- Topbar (solo visible en móviles) -->
+<div class="topbar" *ngIf="!isDesktop">
+  <label class="burger" for="burger">
+    <input type="checkbox" id="burger" (click)="cerrarMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+  </label>
+</div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" [class.open]="menuOpen || isDesktop">
+    <nav>
+      <ul>
+        <li><a routerLink="perfil" routerLinkActive="active" (click)="menuOpen = false">Perfil</a></li>
+        <li><a routerLink="solicitar-cita" routerLinkActive="active" (click)="menuOpen = false">Solicitar Cita</a></li>
+        <li><a routerLink="mis-citas" routerLinkActive="active" (click)="menuOpen = false">Mis Citas</a></li>
+        <li><a (click)="logout(); menuOpen = false" style="cursor: pointer;">Cerrar sesión</a></li>
+      </ul>
+    </nav>
+  </aside>
+
+<!-- Contenedor principal -->
+<div class="dashboard">
+
+
+  <!-- Contenido principal -->
+  <main class="content">
+    <div *ngIf="citasPendientes.length > 0" class="notificacion-citas-pendientes-paciente">
+      <strong>🔔 Tienes {{ citasPendientes.length }} cita(s) pendientes de confirmación o resolución.</strong>
+    </div>
+    <router-outlet></router-outlet>
+  </main>
+</div>

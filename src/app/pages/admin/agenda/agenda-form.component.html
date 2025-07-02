@@ -1,0 +1,131 @@
+<div *ngIf="menuOpcion === 'unitaria'">
+  <!-- Formulario de agenda unitaria -->
+  <form [formGroup]="formAgenda" (ngSubmit)="guardar()">
+    <div class="form-group">
+      <label>Médico</label>
+      <select class="form-control" formControlName="uidMedico" (change)="onMedicoChange($event)">
+        <option *ngFor="let medico of medicos" [value]="medico.id">
+          {{ medico.nombre }}
+        </option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Fecha</label>
+      <input type="date" class="form-control" formControlName="fecha">
+    </div>
+
+    <div class="form-group">
+      <label>Hora de Inicio</label>
+      <input type="time" class="form-control" formControlName="horaInicio">
+    </div>
+
+    <div class="form-group">
+      <label>Hora de Fin</label>
+      <input type="time" class="form-control" formControlName="horaFin">
+    </div>
+
+    <div class="form-group form-check">
+      <input type="checkbox" class="form-check-input" formControlName="disponible">
+      <label class="form-check-label">Disponible</label>
+    </div>
+
+    <div *ngIf="mensajeError" class="alert alert-danger">{{ mensajeError }}</div>
+    <div *ngIf="errorPadre" class="alert alert-danger">{{ errorPadre }}</div>
+
+    <button type="submit" class="btn btn-primary" [disabled]="formAgenda.invalid">Guardar</button>
+    <button type="button" class="btn btn-secondary" (click)="cancelar()">Cancelar</button>
+  </form>
+</div>
+
+<div *ngIf="menuOpcion === 'completa'">
+  <!-- Formulario para crear agendas recurrentes por días de la semana y rango de fechas -->
+  <form [formGroup]="formAgenda" (ngSubmit)="guardar()">
+    <div class="form-group">
+      <label>Médico</label>
+      <select class="form-control" formControlName="uidMedico" (change)="onMedicoChange($event)">
+        <option *ngFor="let medico of medicos" [value]="medico.id">
+          {{ medico.nombre }}
+        </option>
+      </select>
+    </div>
+
+    <div class="form-group mt-3">
+      <label class="mb-2">Días de la semana:</label>
+      <div class="dias-semana-container">
+        <label *ngFor="let dia of diasSemana; let i = index" class="dia-checkbox">
+          <input type="checkbox" [(ngModel)]="diasSeleccionados[i]" [ngModelOptions]="{standalone: true}" name="dia{{i}}" />
+          <span>{{ dia }}</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="form-group mt-2">
+      <label>Fecha de inicio:</label>
+      <input type="date" class="form-control" [(ngModel)]="fechaInicioMes" [ngModelOptions]="{standalone: true}" name="fechaInicioMes" />
+    </div>
+    <div class="form-group mt-2">
+      <label>Fecha de fin:</label>
+      <input type="date" class="form-control" [(ngModel)]="fechaFinMes" [ngModelOptions]="{standalone: true}" name="fechaFinMes" />
+    </div>
+
+    <div class="form-group mt-2">
+      <label>Hora de inicio:</label>
+      <input type="time" class="form-control" [(ngModel)]="horaInicioBloque" [ngModelOptions]="{standalone: true}" name="horaInicioBloque" />
+    </div>
+    <div class="form-group mt-2">
+      <label>Hora de fin:</label>
+      <input type="time" class="form-control" [(ngModel)]="horaFinBloque" [ngModelOptions]="{standalone: true}" name="horaFinBloque" />
+    </div>
+
+    <div class="form-group form-check mt-2">
+      <input type="checkbox" class="form-check-input" formControlName="disponible">
+      <label class="form-check-label">Disponible</label>
+    </div>
+
+    <div *ngIf="mensajeError" class="alert alert-danger">{{ mensajeError }}</div>
+    <div *ngIf="errorPadre" class="alert alert-danger">{{ errorPadre }}</div>
+
+    <button type="submit" class="btn btn-success mt-2">Crear agendas</button>
+    <button type="button" class="btn btn-secondary mt-2" (click)="cancelar()">Cancelar</button>
+  </form>
+</div>
+
+<div *ngIf="menuOpcion === 'actualizacion'">
+  <!-- Elimino <app-agenda-list> para evitar el error de elemento desconocido -->
+  <form [formGroup]="formAgenda" (ngSubmit)="guardar()">
+    <div class="form-group">
+      <label>Médico</label>
+      <select class="form-control" formControlName="uidMedico" (change)="onMedicoChange($event)">
+        <option *ngFor="let medico of medicos" [value]="medico.id">
+          {{ medico.nombre }}
+        </option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Fecha</label>
+      <input type="date" class="form-control" formControlName="fecha">
+    </div>
+    <div class="form-group">
+      <label>Hora de Inicio</label>
+      <input type="time" class="form-control" formControlName="horaInicio">
+    </div>
+    <div class="form-group">
+      <label>Hora de Fin</label>
+      <input type="time" class="form-control" formControlName="horaFin">
+    </div>
+    <div class="form-group form-check">
+      <input type="checkbox" class="form-check-input" formControlName="disponible">
+      <label class="form-check-label">Disponible</label>
+    </div>
+    <div *ngIf="mensajeError" class="alert alert-danger">{{ mensajeError }}</div>
+    <div *ngIf="errorPadre" class="alert alert-danger">{{ errorPadre }}</div>
+    <button type="submit" class="btn btn-primary" [disabled]="formAgenda.invalid">Guardar Cambios</button>
+    <button type="button" class="btn btn-secondary" (click)="cancelar()">Cancelar</button>
+  </form>
+</div>
+
+<hr>
+
+<!-- FullCalendar Web Component -->
+<div id="calendar" style="max-width: 900px; margin: 40px auto;"></div>

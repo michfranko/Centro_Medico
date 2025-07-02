@@ -1,0 +1,51 @@
+h2 {
+  margin-bottom: 1rem;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  border: 1px solid #ddd;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  border-radius: 6px;
+}
+
+button {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+@media (min-width: 901px) {
+  ul {
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  li {
+    font-size: 1.1rem;
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 900px) {
+  ul {
+    max-width: 98vw;
+    margin: 0 auto;
+  }
+  li {
+    font-size: 1rem;
+    padding: 1rem;
+  }
+}

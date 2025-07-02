@@ -1,0 +1,202 @@
+/* Contenedor general */
+.container {
+  margin: 2rem auto;
+  padding: 1rem 2rem;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+}
+
+/* Títulos */
+h2 {
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+  color: #2c3e50;
+  text-align: center;
+}
+
+/* Tabla de pacientes */
+.paciente-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1.5rem;
+}
+
+.paciente-table thead {
+  background-color: #2980b9;
+  color: white;
+}
+
+.paciente-table th,
+.paciente-table td {
+  padding: 0.75rem 1rem;
+  border: 1px solid #ddd;
+  text-align: left;
+  font-size: 0.95rem;
+}
+
+.paciente-table tbody tr:hover {
+  background-color: #f0f8ff;
+}
+
+.paciente-table button {
+  background-color: #3498db;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  color: white;
+  font-size: 0.85rem;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 0.5rem;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.paciente-table button:hover {
+  background-color: #1d6fa5;
+}
+
+/* Formulario */
+form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 2rem;
+  justify-content: space-between;
+  background: #ecf0f1;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  box-shadow: inset 0 0 5px rgb(0 0 0 / 0.05);
+  margin-bottom: 2rem;
+}
+
+form .form-group {
+  flex: 1 1 45%;
+  display: flex;
+  flex-direction: column;
+}
+
+form label {
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+  color: #34495e;
+}
+
+form input, form select {
+  padding: 0.5rem 0.8rem;
+  font-size: 1rem;
+  border: 1px solid #bdc3c7;
+  border-radius: 4px;
+  transition: border-color 0.2s ease-in-out;
+}
+
+form input:focus, form select:focus {
+  outline: none;
+  border-color: #2980b9;
+  box-shadow: 0 0 4px #2980b9aa;
+}
+
+form .error-message {
+  color: #e74c3c;
+  font-size: 0.85rem;
+  margin-top: 0.2rem;
+}
+
+form .buttons {
+  flex-basis: 100%;
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+form button {
+  background-color: #27ae60;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  color: white;
+  font-size: 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+form button.cancel-btn {
+  background-color: #c0392b;
+}
+
+form button:hover {
+  background-color: #219150;
+}
+
+form button.cancel-btn:hover {
+  background-color: #962d22;
+}
+form .form-group {
+    flex: 1 1 100%;
+  }
+
+  .paciente-table th, .paciente-table td {
+    font-size: 0.85rem;
+  }
+
+  .paciente-table button {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.75rem;
+  }
+
+  .medico-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1.5rem;
+}
+
+.medico-table thead {
+  background-color: #27ae60;
+  color: white;
+}
+
+.medico-table th,
+.medico-table td {
+  padding: 0.75rem 1rem;
+  border: 1px solid #ddd;
+  text-align: left;
+  font-size: 0.95rem;
+}
+
+.medico-table tbody tr:hover {
+  background-color: #f0f8ff;
+}
+
+.medico-table button {
+  background-color: #3498db;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  color: white;
+  font-size: 0.85rem;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 0.5rem;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.medico-table button:hover {
+  background-color: #1d6fa5;
+}
+
+/* Responsive para pantallas pequeñas */
+@media (max-width: 950px) {
+
+  .oculto{
+    display:none
+  }
+
+  .acciones-boton{
+    display :flex;
+    flex-direction: column;
+  }
+  .acciones-boton button{
+    margin: 3px 0 ;
+  }
+  
+}

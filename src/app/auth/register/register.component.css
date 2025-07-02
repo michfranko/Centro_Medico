@@ -1,0 +1,98 @@
+/* Contenedor centrado vertical y horizontalmente */
+.register-container {
+  max-width: 400px;
+  margin: auto;
+  padding: 30px 20px;
+  border-radius: 10px;
+  background-color: #ffffff;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e2e8f0;
+  font-family: 'Roboto', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 90vh; /* para que ocupe casi toda la pantalla y se centre verticalmente */
+  box-sizing: border-box;
+  transition: box-shadow 0.3s ease;
+}
+
+.register-container:hover {
+  box-shadow: 0 12px 30px rgba(0, 123, 255, 0.15);
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 25px;
+  color: #222;
+  font-weight: 700;
+  font-size: 2rem;
+  letter-spacing: 0.05em;
+  font-family: 'Roboto Slab', serif; /* para un toque elegante */
+}
+
+label {
+  display: block;
+  margin-top: 18px;
+  margin-bottom: 7px;
+  font-weight: 600;
+  color: #444;
+  user-select: none;
+  font-size: 1rem;
+}
+
+input {
+  width: 100%;
+  padding: 8px 12px; /* menos padding para que sean más pequeños */
+  height: 36px; /* altura moderada */
+  border: 1.5px solid #ccc;
+  border-radius: 7px;
+  font-size: 0.95rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  box-sizing: border-box;
+  font-family: 'Roboto', sans-serif;
+}
+
+input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 8px 2px #007bff44;
+  background-color: #f9fbff;
+}
+
+.error-msg {
+  color: #d93025;
+  margin-top: 5px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  font-style: italic;
+  user-select: none;
+  font-family: 'Roboto', sans-serif;
+}
+
+button {
+  margin-top: 30px;
+  width: 100%;
+  background-color: #007bff;
+  border: none;
+  color: white;
+  font-size: 1.1rem;
+  padding: 12px 0;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  user-select: none;
+  font-family: 'Roboto', sans-serif;
+}
+
+button:hover:not(:disabled) {
+  background-color: #0056b3;
+  transform: scale(1.03);
+}
+
+button:disabled {
+  background-color: #a0c4ff;
+  cursor: not-allowed;
+  transform: none;
+}

@@ -1,0 +1,9 @@
+{
+  "projects": {
+    "default": "citas-medicas-f73b9",
+    "citas": "citas-medicas-f73b9",
+    "hosting": "citas-medicas-f73b9"
+  },
+  "targets": {},
+  "etags": {}
+}

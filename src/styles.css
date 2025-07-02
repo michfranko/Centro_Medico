@@ -1,0 +1,38 @@
+/* You can add global styles to this file, and also import other style files */
+
+body {
+    font-family: Roboto, "Helvetica Neue", sans-serif; 
+    
+}
+html, body {
+    margin: 0;
+    height: 100%;
+    padding: 0;
+}
+app-root {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  body, html {
+    font-size: 15px;
+  }
+  app-root {
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  body, html {
+    font-size: 14px;
+  }
+  app-root {
+    padding: 0;
+  }
+}

@@ -1,0 +1,18 @@
+<h2>Mis Citas Médicas</h2>
+
+<ng-container *ngIf="citas$ | async as citas">
+  <div *ngIf="citas.length === 0">
+    <p>No tienes citas agendadas.</p>
+  </div>
+
+  <ul *ngIf="citas.length > 0">
+    <li *ngFor="let cita of citas">
+      <strong>Médico:</strong> {{ cita?.medicoNombre }} <br>
+      <strong>Fecha:</strong> {{ cita?.fecha | date:'medium' }} <br>
+      <strong>Estado:</strong> {{ cita?.estado }} <br>
+     <button (click)="eliminarCita(cita)">Cancelar</button>
+
+
+    </li>
+  </ul>
+</ng-container>

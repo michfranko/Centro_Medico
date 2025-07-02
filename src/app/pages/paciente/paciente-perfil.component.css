@@ -1,0 +1,70 @@
+.perfil-container {
+  max-width: 500px;
+  margin: auto;
+  padding: 1.5rem;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+label {
+  display: block;
+  margin-top: 1rem;
+  font-weight: bold;
+}
+
+input {
+  width: 100%;
+  padding: 0.5rem;
+  margin-top: 0.3rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+button {
+  margin-top: 1.5rem;
+  padding: 0.5rem 1rem;
+  background-color: #2d8fdd;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+@media (min-width: 901px) {
+  .perfil-container {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 2.5rem 3rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+  }
+  input {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .perfil-container {
+    max-width: 98vw;
+    min-width: 0;
+    margin: 2rem auto 0 auto;
+    padding: 1.2rem 0.7rem;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  label, input {
+    width: 100%;
+    box-sizing: border-box;
+    text-align: left;
+  }
+  input {
+    font-size: 1.05rem;
+    margin-bottom: 0.7rem;
+  }
+}

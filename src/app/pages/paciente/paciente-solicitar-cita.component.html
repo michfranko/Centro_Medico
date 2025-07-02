@@ -1,0 +1,31 @@
+<h2>Solicitar Cita Médica</h2>
+
+<form [formGroup]="form" (ngSubmit)="solicitarCita()">
+  <label for="medico">Médico:</label>
+  <select id="medico" formControlName="medicoId">
+    <option value="">--Seleccione un médico--</option>
+    <option *ngFor="let medico of medicos" [value]="medico.id">
+      {{ medico.nombre }} - {{ medico.especialidad }}
+    </option>
+  </select>
+
+  <div *ngIf="agendasDisponibles.length > 0">
+    <label for="agenda">Fechas y Horarios Disponibles:</label>
+    <select id="agenda" formControlName="agendaId">
+      <option value="">--Seleccione una agenda--</option>
+      <option *ngFor="let agenda of agendasDisponibles" [value]="agenda.id">
+        {{ agenda.fecha }} - {{ agenda.horaInicio }} a {{ agenda.horaFin }}
+      </option>
+    </select>
+  </div>
+  <div *ngIf="form.get('medicoId')?.value && agendasDisponibles.length === 0">
+    <p style="color: red;">Este médico no tiene agendas disponibles.</p>
+  </div>
+
+  <label for="motivo">Motivo:</label>
+  <textarea id="motivo" formControlName="motivo" rows="3"></textarea>
+
+  <button type="submit">Solicitar Cita</button>
+</form>
+
+<p *ngIf="mensaje" [style.color]="mensaje.includes('✅') ? 'green' : 'red'">{{ mensaje }}</p>

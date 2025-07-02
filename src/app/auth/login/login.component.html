@@ -1,0 +1,20 @@
+<form [formGroup]="loginForm" (ngSubmit)="login()" class="login-form">
+  <input formControlName="email" placeholder="Correo electrónico" type="email" class="input-field" />
+  <div *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" class="error-message">
+    <small *ngIf="loginForm.get('email')?.errors?.['required']">El correo es obligatorio.</small>
+    <small *ngIf="loginForm.get('email')?.errors?.['email']">Correo inválido.</small>
+  </div>
+
+  <input type="password" formControlName="password" placeholder="Contraseña" class="input-field" />
+  <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" class="error-message">
+    <small>La contraseña es obligatoria.</small>
+  </div>
+
+  <button type="submit" [disabled]="loginForm.invalid" class="btn primary-btn">Iniciar Sesión</button>
+
+  <button type="button" (click)="loginWithGoogle()" class="btn google-btn">Iniciar con Google</button>
+
+  <a routerLink="/reset-password" class="link">¿Olvidaste tu contraseña?</a>
+  <br />
+  <a routerLink="/register" class="link">Crear una cuenta</a>
+</form>

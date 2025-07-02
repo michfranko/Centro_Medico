@@ -1,0 +1,60 @@
+<div class="container">
+  <h2>Gestión de Agendas Médicas</h2>
+
+  <div class="agenda-menu" style="margin-bottom: 24px; text-align: center;">
+    <button class="btn btn-outline-primary" [class.active]="menuOpcion === 'unitaria'" (click)="setMenuOpcion('unitaria')">Crear agenda unitaria</button>
+    <button class="btn btn-outline-success" [class.active]="menuOpcion === 'completa'" (click)="setMenuOpcion('completa')">Crear agenda completa</button>
+    <button class="btn btn-outline-info" [class.active]="menuOpcion === 'actualizacion'" (click)="setMenuOpcion('actualizacion')">Actualización</button>
+  </div>
+
+  <div *ngIf="menuOpcion === 'unitaria'">
+    <!-- Formulario de agenda unitaria -->
+    <app-agenda-form [medicos]="medicos" [menuOpcion]="menuOpcion" (onSave)="onSaveAgenda($event)" (onCancel)="cancelarEdicion()"></app-agenda-form>
+  </div>
+
+  <div *ngIf="menuOpcion === 'completa'">
+    <!-- Formulario para crear agendas recurrentes -->
+    <app-agenda-form [medicos]="medicos" [menuOpcion]="menuOpcion" (onSave)="onSaveAgenda($event)" (onCancel)="cancelarEdicion()"></app-agenda-form>
+  </div>
+
+  <div *ngIf="menuOpcion === 'actualizacion'">
+    <!-- Lista de agendas y select de médico -->
+    <div class="row mb-3">
+      <div class="col-md-12">
+        <select class="form-control" [(ngModel)]="medicoFiltradoId" [ngModelOptions]="{standalone: true}" (change)="filtrarAgendasPorMedico()">
+          <option value="">-- Selecciona un médico --</option>
+          <option *ngFor="let medico of medicos" [value]="medico.id">{{ medico.nombre }}</option>
+        </select>
+      </div>
+    </div>
+    <table class="table table-striped mt-3">
+      <thead>
+        <tr>
+          <th>Médico</th>
+          <th>Fecha</th>
+          <th>Hora Inicio</th>
+          <th>Hora Fin</th>
+          <th>Disponible</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let agenda of agendas$ | async">
+          <td data-label="Médico">{{ getNombreMedico(agenda.uidMedico) }}</td>
+          <td data-label="Fecha">{{ agenda.fecha }}</td>
+          <td data-label="Hora Inicio">{{ agenda.horaInicio }}</td>
+          <td data-label="Hora Fin">{{ agenda.horaFin }}</td>
+          <td data-label="Disponible">{{ agenda.disponible ? 'Sí' : 'No' }}</td>
+          <td data-label="Acciones">
+            <button class="btn btn-sm btn-warning btn-edit" (click)="editAgenda(agenda)">Editar</button>
+            <button class="btn btn-sm btn-danger btn-delete" (click)="deleteAgenda(agenda.id!)">Eliminar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <!-- Formulario de edición solo si hay agenda seleccionada -->
+    <div *ngIf="selectedAgenda">
+      <app-agenda-form [agenda]="selectedAgenda" [medicos]="medicos" [errorPadre]="errorPadre" (onSave)="onSaveAgenda($event)" (onCancel)="cancelarEdicion()"></app-agenda-form>
+    </div>
+  </div>
+</div>

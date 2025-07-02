@@ -1,0 +1,20 @@
+<div class="perfil-container" *ngIf="form">
+  <h2>Mi Perfil</h2>
+  <form [formGroup]="form">
+    <label for="nombre">Nombre:</label>
+    <input id="nombre" type="text" formControlName="nombre" [readonly]="!editMode" />
+    <div *ngIf="editMode && form.get('nombre')?.invalid && form.get('nombre')?.touched" class="error-message">El nombre es obligatorio.</div>
+
+    <label for="direccion">Dirección:</label>
+    <input id="direccion" type="text" formControlName="direccion" [readonly]="!editMode" />
+    <div *ngIf="editMode && form.get('direccion')?.invalid && form.get('direccion')?.touched" class="error-message">La dirección es obligatoria.</div>
+
+    <label for="fechaNacimiento">Fecha de Nacimiento:</label>
+    <input id="fechaNacimiento" type="date" formControlName="fechaNacimiento" [readonly]="!editMode" />
+    <div *ngIf="editMode && form.get('fechaNacimiento')?.invalid && form.get('fechaNacimiento')?.touched" class="error-message">La fecha de nacimiento es obligatoria.</div>
+
+    <label for="email">Email:</label>
+    <input id="email" type="email" formControlName="email" readonly />
+
+  </form>
+</div>

@@ -1,0 +1,54 @@
+<div class="topbar" *ngIf="!isDesktop">
+  <label class="burger" for="burger">
+    <input type="checkbox" id="burger" [checked]="isMenuOpen" (change)="cerrarMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+  </label>
+</div>
+
+<div class="dashboard">
+  <!-- Sidebar en desktop -->
+  <aside
+    class="sidebar"
+    *ngIf="isDesktop"
+    role="navigation"
+  >
+    <nav>
+      <ul>
+        <li><a routerLink="pacientes" routerLinkActive="active">Pacientes</a></li>
+        <li><a routerLink="medicos" routerLinkActive="active">Médicos</a></li>
+        <li><a routerLink="Admin" routerLinkActive="active">Administradores</a></li>
+        <li><a routerLink="agenda" routerLinkActive="active">Agenda</a></li>
+        <li><a routerLink="citas" routerLinkActive="active">Solicitudes de Citas</a></li>
+        <li><a (click)="logout()">Cerrar sesión</a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- Menú desplegable en móvil -->
+  <div
+    class="mobile-menu"
+    [ngClass]="{ 'activo': isMenuOpen }"
+    role="navigation"
+    aria-label="Menú principal"
+  >
+    <nav>
+      <ul>
+        <li><a routerLink="pacientes" routerLinkActive="active" (click)="cerrarMenu()">Pacientes</a></li>
+        <li><a routerLink="medicos" routerLinkActive="active" (click)="cerrarMenu()">Médicos</a></li>
+        <li><a routerLink="Admin" routerLinkActive="active" (click)="cerrarMenu()">Administradores</a></li>
+        <li><a routerLink="agenda" routerLinkActive="active" (click)="cerrarMenu()">Agenda</a></li>
+        <li><a routerLink="citas" routerLinkActive="active" (click)="cerrarMenu()">Solicitudes de Citas</a></li>
+        <li><a (click)="logout(); cerrarMenu()">Cerrar sesión</a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <main class="content">
+    <div *ngIf="citasPendientesCount > 0" class="notificacion-citas-pendientes" role="alert" aria-live="polite">
+      <strong>🔔 Hay {{ citasPendientesCount }} cita(s) esperando resolución.</strong>
+    </div>
+    <router-outlet></router-outlet>
+  </main>
+</div>
