@@ -27,6 +27,10 @@ import { Paciente } from '../../../models/paciente.model';
         <input formControlName="direccion" type="text">
       </label>
 
+      <label>Contacto:
+        <input formControlName="contacto" type="text">
+      </label>
+
       <label>Fecha de Nacimiento:
         <input formControlName="fechaNacimiento" type="date">
       </label>
@@ -88,6 +92,7 @@ export class PacienteFormComponent implements OnChanges {
     this.form = this.fb.group({
       nombre: ['', Validators.required],
       direccion: ['', Validators.required],
+      contacto: [''],
       fechaNacimiento: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       password: ['']
@@ -99,6 +104,7 @@ export class PacienteFormComponent implements OnChanges {
       this.form.patchValue({
         nombre: this.paciente.nombre,
         direccion: this.paciente.direccion,
+        contacto: this.paciente.contacto,
         fechaNacimiento: this.paciente.fechaNacimiento,
         email: this.paciente.email,
         password: ''
@@ -121,12 +127,13 @@ export class PacienteFormComponent implements OnChanges {
     if (this.form.invalid) return;
 
     const formData = this.form.value;
-
-    if (this.paciente?.uid) {
+    const uidNumber = Number(this.paciente?.uid);
+    if (this.paciente?.uid && !isNaN(uidNumber)) {
       // Actualizar paciente existente
-      this.pacienteService.updatePaciente(Number(this.paciente.uid), {
+      this.pacienteService.updatePaciente(uidNumber, {
         nombre: formData.nombre,
         direccion: formData.direccion,
+        contacto: formData.contacto,
         fechaNacimiento: formData.fechaNacimiento,
         email: formData.email,
         rol: 'paciente'
@@ -139,6 +146,7 @@ export class PacienteFormComponent implements OnChanges {
       this.pacienteService.createPaciente({
         nombre: formData.nombre,
         direccion: formData.direccion,
+        contacto: formData.contacto,
         fechaNacimiento: formData.fechaNacimiento,
         email: formData.email,
         rol: 'paciente'

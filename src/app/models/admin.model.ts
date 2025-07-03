@@ -4,5 +4,6 @@ export interface Administrador {
   direccion: string;
   fechaNacimiento: string;
   email: string;
+  contacto: string;
   rol?: 'administrador';
 }

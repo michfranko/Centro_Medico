@@ -4,5 +4,6 @@ export interface Paciente {
   direccion: string;
   fechaNacimiento: string;
   email: string;
+  contacto: string;
   rol?: 'paciente';
 }
