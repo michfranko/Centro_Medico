@@ -1,7 +1,7 @@
 // src/app/pages/admin/pacientes/paciente-list.component.ts
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { PacienteService } from '../../../services/paciente.service';
+import { UsuarioService } from '../../../services/usuario.service';
 import { Paciente } from '../../../models/paciente.model';
 import { Observable } from 'rxjs';
 import { PacienteFormComponent } from './paciente-form.component';
@@ -29,6 +29,7 @@ import { PacienteFormComponent } from './paciente-form.component';
             <th>Direccion</th>
             <th>Fecha Nacimiento</th>
             <th>Email</th>
+            <th>Contacto</th>
             <th>Acciones</th>
           </tr>
         </thead>
@@ -38,10 +39,10 @@ import { PacienteFormComponent } from './paciente-form.component';
               <td>{{ paciente.direccion }}</td>
               <td>{{ paciente.fechaNacimiento }}</td>
               <td>{{ paciente.email }}</td>
-
+              <td>{{ paciente.contacto }}</td>
             <td>
               <button (click)="editPaciente(paciente)">Editar</button>
-              <button (click)="deletePaciente(paciente.uid!)">Eliminar</button>
+              <button *ngIf="paciente.id !== undefined" (click)="deletePaciente(paciente.id)">Eliminar</button>
             </td>
           </tr>
         </tbody>
@@ -54,14 +55,14 @@ export class PacienteListComponent implements OnInit {
   selectedPaciente: Paciente | null = null;
   isEditMode: boolean = false;
 
-  constructor(private pacienteService: PacienteService) {}
+  constructor(private usuarioService: UsuarioService) {}
 
   ngOnInit(): void {
     this.loadPacientes();
   }
 
   loadPacientes() {
-    this.pacientes$ = this.pacienteService.getPacientes();
+    this.pacientes$ = this.usuarioService.getPacientes();
   }
 
   editPaciente(paciente: Paciente): void {
@@ -69,9 +70,13 @@ export class PacienteListComponent implements OnInit {
     this.isEditMode = true;
   }
 
-  deletePaciente(id: string | number): void {
+  deletePaciente(id: number): void {
     if (confirm('¿Estás seguro de eliminar este paciente?')) {
-      this.pacienteService.deletePaciente(Number(id)).subscribe({
+      if (!id || isNaN(Number(id))) {
+        alert('ID de paciente inválido. No se puede eliminar.');
+        return;
+      }
+      this.usuarioService.deletePaciente(Number(id)).subscribe({
         next: () => this.loadPacientes(),
         error: () => alert('Error al eliminar el paciente.')
       });
