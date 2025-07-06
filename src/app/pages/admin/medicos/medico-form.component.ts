@@ -30,6 +30,11 @@ import { Medico } from '../../../models/medico.model';
       <input formControlName="contacto" type="text" class="form-control" required />
     </div>
 
+    <div class="form-group">
+      <label>Dirección:</label>
+      <input formControlName="direccion" type="text" class="form-control" required />
+    </div>
+
     <div class="buttons">
       <button type="submit" [disabled]="form.invalid">
         {{ medico?.id ? 'Actualizar' : 'Agregar' }}
@@ -52,7 +57,8 @@ export class MedicoFormComponent implements OnChanges {
     this.form = this.fb.group({
       nombre: ['', Validators.required],
       especialidad: ['', Validators.required],
-      contacto: ['', Validators.required]
+      contacto: ['', Validators.required], // este es el teléfono
+      direccion: ['', Validators.required]
     });
   }
 
@@ -66,7 +72,6 @@ export class MedicoFormComponent implements OnChanges {
 
   onSubmit(): void {
     const data: Medico = { ...this.form.value };
-
     if (this.medico?.id) {
       data.id = this.medico.id;
       this.medicoService.updateMedico(Number(data.id), data).subscribe({

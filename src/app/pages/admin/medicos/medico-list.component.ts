@@ -24,7 +24,7 @@ import { MedicoFormComponent } from './medico-form.component';
           <tr>
             <th>Nombre</th>
             <th>Especialidad</th>
-            <th class="oculto">Contacto</th>
+            <th>Contacto</th>
             <th>Acciones</th>
           </tr>
         </thead>
@@ -32,11 +32,10 @@ import { MedicoFormComponent } from './medico-form.component';
           <tr *ngFor="let medico of medicos$ | async">
             <td>{{ medico.nombre }}</td>
             <td>{{ medico.especialidad }}</td>
-            <td class="oculto">{{ medico.contacto }}</td>
+            <td>{{ medico.contacto }}</td>
             <td class="acciones-boton">
               <button (click)="editMedico(medico)">Editar</button>
               <button (click)="medico.id && deleteMedico(medico.id)">Eliminar</button>
-
             </td>
           </tr>
         </tbody>
@@ -70,5 +69,7 @@ export class MedicoListComponent implements OnInit {
 
   handleFormSubmit(_: void) {
     this.selectedMedico = null;
+    // Recargar la lista de médicos tras agregar/editar
+    this.medicos$ = this.medicoService.getMedicos();
   }
 }
