@@ -104,11 +104,18 @@ export class AgendaListComponent implements OnInit {
     this.selectedAgenda =undefined;
   }
 
-  getNombreMedico(medicoId?: string | number): string {
-    if (!medicoId) return 'Sin asignar';
-    const medico = this.medicos.find(m => m.id === medicoId);
-    return medico ? medico.nombre : 'Sin asignar';
-  }
+getNombreMedico(medicoId?: string | number): string {
+  if (!medicoId) return 'Sin asignar';
+  
+  // Convert to number if it's a string
+  const idNum = typeof medicoId === 'string' ? Number(medicoId) : medicoId;
+  if (isNaN(idNum)) return 'Sin asignar';
+  
+  // Find the medico - convert both IDs to string for comparison to avoid type issues
+  const medico = this.medicos.find(m => String(m.id) === String(idNum));
+  return medico ? medico.nombre : 'Sin asignar';
+}
+
 
   get medicosFiltrados(): Medico[] {
     if (!this.filtroMedico.trim()) return this.medicos;

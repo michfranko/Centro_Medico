@@ -12,7 +12,8 @@
       <tr>
         <th>Nombre</th>
         <th>Email</th>
-        <th>Dirección</th>
+        <th>Contacto</th>
+        <th>Fecha Nacimiento</th>
         <th>Acciones</th>
       </tr>
     </thead>
@@ -20,10 +21,11 @@
       <tr *ngFor="let admin of admins$ | async">
         <td data-label="Nombre">{{ admin.nombre }}</td>
         <td data-label="Email">{{ admin.email }}</td>
-        <td data-label="Dirección">{{ admin.direccion }}</td>
+        <td data-label="Contacto">{{ admin.contacto }}</td>
+        <td data-label="Fecha Nacimiento">{{ admin.fechaNacimiento }}</td>
         <td data-label="Acciones">
           <button (click)="editAdmin(admin)">Editar</button>
-          <button (click)="deleteAdmin(admin.uid!)">Eliminar</button>
+          <button (click)="deleteAdmin(admin)">Eliminar</button>
         </td>
       </tr>
     </tbody>

@@ -1,9 +1,13 @@
 export interface Agenda {
-  id?: string;
-  uidMedico: string;
+  id?: number;
+  uidMedico?: number; // usado en el form
+  medico?: {
+    id: number;
+    nombre: string;
+  }; // viene del backend
+  medicoNombre?: string; // usado en FullCalendar
   fecha: string;
   horaInicio: string;
   horaFin: string;
-  disponible: boolean;
-  medicoNombre?: string; 
+  disponible?: boolean;
 }

@@ -76,7 +76,7 @@ export class PacienteListComponent implements OnInit {
         alert('ID de paciente inválido. No se puede eliminar.');
         return;
       }
-      this.usuarioService.deletePaciente(Number(id)).subscribe({
+      this.usuarioService.deleteUsuario(id).subscribe({
         next: () => this.loadPacientes(),
         error: () => alert('Error al eliminar el paciente.')
       });

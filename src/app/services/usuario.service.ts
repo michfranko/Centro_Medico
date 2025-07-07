@@ -5,6 +5,7 @@ import { Paciente } from '../models/paciente.model';
 import { Administrador } from '../models/admin.model';
 import { map } from 'rxjs/operators';
 import { Auth } from '@angular/fire/auth';
+import { createUserWithEmailAndPassword, UserCredential } from 'firebase/auth';
 
 @Injectable({ providedIn: 'root' })
 export class UsuarioService {
@@ -54,23 +55,52 @@ export class UsuarioService {
       );
   }
 
-  deletePaciente(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  getAdmins(): Observable<Administrador[]> {
+    return this.http.get<(Administrador | Paciente)[]>(this.apiUrl)
+      .pipe(
+        map(usuarios => usuarios
+          .filter(u => u.rol === 'administrador')
+          .map((u: any) => ({
+            ...u,
+            fechaNacimiento: u.fechaNacimiento || u.fecha_nacimiento || '',
+          })) as Administrador[]
+        )
+      );
   }
 
-  createUsuario(usuario: Paciente | Administrador): Observable<Paciente | Administrador> {
+  deleteUsuario(uid: string | number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${uid}`);
+  }
+
+  createUsuario(usuario: Paciente | Administrador & { password?: string }): Observable<Paciente | Administrador> {
     return new Observable(observer => {
-      this.auth.currentUser?.getIdToken().then(token => {
-        const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
-        this.http.post<Paciente | Administrador>(this.apiUrl, usuario, { headers })
-          .subscribe({
-            next: res => {
-              observer.next(res);
-              observer.complete();
-            },
-            error: err => observer.error(err)
+      // 1. Crear usuario en Firebase Auth
+      if (!usuario.email || !usuario.password) {
+        observer.error('Email y contraseña son requeridos');
+        return;
+      }
+      createUserWithEmailAndPassword(this.auth, usuario.email, usuario.password)
+        .then((userCredential: UserCredential) => {
+          // 2. Guardar en la base de datos/backend
+          const payload = {
+            ...usuario,
+            uid: userCredential.user.uid,
+            email: userCredential.user.email,
+          };
+          delete payload.password;
+          userCredential.user.getIdToken().then(token => {
+            const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+            this.http.post<Paciente | Administrador>(this.apiUrl, payload, { headers })
+              .subscribe({
+                next: res => {
+                  observer.next(res);
+                  observer.complete();
+                },
+                error: err => observer.error(err)
+              });
           });
-      }).catch(err => observer.error(err));
+        })
+        .catch(err => observer.error(err));
     });
   }
 }

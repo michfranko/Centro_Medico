@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Observable } from 'rxjs';
-import { AdminService } from '../../../services/admin.service';
+import { UsuarioService } from '../../../services/usuario.service';
 import { Administrador } from '../../../models/admin.model';
 import { AdminFormComponent } from './admin-form.component';
 
@@ -16,20 +16,25 @@ export class AdminListComponent implements OnInit {
   admins$!: Observable<Administrador[]>;
   selectedAdmin: Administrador | null = null;
 
-  constructor(private adminService: AdminService) {}
+  constructor(private usuarioService: UsuarioService) {}
 
   ngOnInit(): void {
-    this.admins$ = this.adminService.getAdmins();
+    this.admins$ = this.usuarioService.getAdmins();
   }
 
   editAdmin(admin: Administrador) {
     this.selectedAdmin = { ...admin }; // clonar admin para edición
   }
 
-  deleteAdmin(uid: string | number) {
+  deleteAdmin(admin: Administrador) {
+    const id = (admin as any).id ?? admin.uid;
+    if (!id) {
+      alert('No se puede eliminar: el usuario no tiene id ni uid.');
+      return;
+    }
     if (confirm('¿Seguro que quieres eliminar?')) {
-      this.adminService.deleteAdmin(Number(uid)).subscribe({
-        next: () => {},
+      this.usuarioService.deleteUsuario(id).subscribe({
+        next: () => this.admins$ = this.usuarioService.getAdmins(),
         error: () => alert('Error al eliminar el administrador.')
       });
     }
@@ -38,5 +43,6 @@ export class AdminListComponent implements OnInit {
 
   onFormSubmit() {
     this.selectedAdmin = null;  // limpiar el formulario al terminar edición o creación
+    this.admins$ = this.usuarioService.getAdmins();
   }
 }

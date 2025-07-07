@@ -13,6 +13,7 @@ import { AgendaService } from '../../../services/agenda.service';
   templateUrl: './agenda-form.component.html',
   styleUrls: ['./agenda-form.component.css']
 })
+
 export class AgendaFormComponent implements OnInit, OnChanges, AfterViewInit {
   @Input() agenda?: Agenda;
   @Input() medicos: Medico[] = [];
@@ -132,10 +133,10 @@ export class AgendaFormComponent implements OnInit, OnChanges, AfterViewInit {
         const medico = this.medicos.find(m => m.id === agendaForm.uidMedico);
         const medicoNombre = medico ? medico.nombre : 'Sin asignar';
         const agenda: Agenda = {
-          ...agendaForm,
-          id: this.editingAgenda.id,
-          medicoNombre
-        };
+         ...agendaForm,
+          medico: medico,         // esto se mostrará en el calendario
+           medicoNombre: medicoNombre,
+      };
         if (agenda.id) {
           await this.agendaService.updateAgenda(Number(agenda.id), agenda).toPromise();
         } else {
@@ -262,7 +263,11 @@ export class AgendaFormComponent implements OnInit, OnChanges, AfterViewInit {
     if (agenda.id) {
       this.agendaService.deleteAgenda(Number(agenda.id)).subscribe({
         next: () => {
-          this.cargarAgendasMedico(agenda.uidMedico);
+         if (this.formAgenda.value.uidMedico !== undefined) {
+  this.cargarAgendasMedico(this.formAgenda.value.uidMedico);
+}
+
+
           setTimeout(() => {
             this.destroyAndReinitCalendar();
           }, 0);
@@ -292,12 +297,13 @@ export class AgendaFormComponent implements OnInit, OnChanges, AfterViewInit {
       this.calendar.removeAllEvents();
       this.agendasMedico.forEach(a => {
         this.calendar.addEvent({
-          id: a.id,
-          title: `${a.medicoNombre || ''} (${a.horaInicio} - ${a.horaFin})`,
-          start: a.fecha + 'T' + a.horaInicio,
-          end: a.fecha + 'T' + a.horaFin
-        });
-      });
+        id: a.id?.toString(),
+        title: `${a.medico?.nombre || a.medicoNombre || ''} (${a.horaInicio} - ${a.horaFin})`,
+        start: a.fecha + 'T' + a.horaInicio,
+       end: a.fecha + 'T' + a.horaFin
+     });
+   });
+
     }
   }
 

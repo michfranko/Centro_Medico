@@ -11,17 +11,18 @@ export class AgendaService {
 
   constructor(private http: HttpClient) {}
 
-  getAgendas(): Observable<Agenda[]> {
-    return this.http.get<Agenda[]>(this.apiUrl);
-  }
 
-  getAgendasByMedico(medicoId: number): Observable<Agenda[]> {
-    return this.http.get<Agenda[]>(`${this.apiUrl}/medico/${medicoId}`);
-  }
+getAgendas(): Observable<Agenda[]> {
+  return this.http.get<Agenda[]>(`${this.apiUrl}`);
+}
 
-  addAgenda(agenda: Agenda): Observable<Agenda> {
-    return this.http.post<Agenda>(this.apiUrl, agenda);
-  }
+getAgendasByMedico(medicoId: number): Observable<Agenda[]> {
+  return this.http.get<Agenda[]>(`${this.apiUrl}/medico/${medicoId}`);
+}
+
+addAgenda(agenda: Agenda): Observable<Agenda> {
+  return this.http.post<Agenda>(`${this.apiUrl}`, agenda);
+}
 
   updateAgenda(id: number, agenda: Partial<Agenda>): Observable<Agenda> {
     return this.http.put<Agenda>(`${this.apiUrl}/${id}`, agenda);
