@@ -135,7 +135,7 @@ export class AuthService {
 
   async logout() {
     await signOut(this.auth);
-    this.router.navigate(['/login']);
+    this.router.navigate(['/']);
   }
 
   resetPassword(email: string) {

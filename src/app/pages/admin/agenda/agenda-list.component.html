@@ -30,7 +30,6 @@
     <table class="table table-striped mt-3">
       <thead>
         <tr>
-          <th>Médico</th>
           <th>Fecha</th>
           <th>Hora Inicio</th>
           <th>Hora Fin</th>
@@ -40,7 +39,6 @@
       </thead>
       <tbody>
         <tr *ngFor="let agenda of agendas$ | async">
-          <td data-label="Médico">{{ getNombreMedico(agenda.uidMedico) }}</td>
           <td data-label="Fecha">{{ agenda.fecha }}</td>
           <td data-label="Hora Inicio">{{ agenda.horaInicio }}</td>
           <td data-label="Hora Fin">{{ agenda.horaFin }}</td>

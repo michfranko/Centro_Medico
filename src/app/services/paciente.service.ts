@@ -35,4 +35,9 @@ export class PacienteService {
   deletePaciente(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
+
+  // Obtener un paciente por UID de Firebase
+  getPacienteByUid(uid: string): Observable<Paciente> {
+    return this.http.get<Paciente>(`http://localhost:8081/api/usuarios/uid/${uid}`);
+  }
 }

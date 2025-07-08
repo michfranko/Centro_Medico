@@ -167,6 +167,7 @@ export class AgendaFormComponent implements OnInit, OnChanges, AfterViewInit {
         let current = new Date(this.fechaInicioMes);
         const end = new Date(this.fechaFinMes);
         let agendasCreadas = 0;
+        let agendasSolapadas = 0;
         while (current <= end) {
           let diaSemana = current.getDay();
           diaSemana = diaSemana === 0 ? 6 : diaSemana - 1; // Ajustar a 0=Lunes, 6=Domingo
@@ -182,22 +183,41 @@ export class AgendaFormComponent implements OnInit, OnChanges, AfterViewInit {
             }
             const horaInicio = this.padTime(Math.floor(startMinutes / 60)) + ':' + this.padTime(startMinutes % 60);
             const horaFin = this.padTime(Math.floor(endMinutes / 60)) + ':' + this.padTime(endMinutes % 60);
-            const agenda: Agenda = {
-              uidMedico: agendaForm.uidMedico,
-              fecha: current.toISOString().split('T')[0],
-              horaInicio,
-              horaFin,
-              disponible: agendaForm.disponible,
-              medicoNombre
-            };
-            await this.agendaService.addAgenda(agenda);
-            agendasCreadas++;
+            // Verificar solapamiento antes de crear
+            // eslint-disable-next-line no-await-in-loop
+            const agendasExistentes = await this.agendaService.getAgendasByMedico(Number(agendaForm.uidMedico)).toPromise();
+            const existeSolapamiento = (agendasExistentes || []).some(a =>
+              a.fecha === current.toISOString().split('T')[0] &&
+              (
+                (horaInicio >= a.horaInicio && horaInicio < a.horaFin) ||
+                (horaFin > a.horaInicio && horaFin <= a.horaFin) ||
+                (horaInicio <= a.horaInicio && horaFin >= a.horaFin)
+              )
+            );
+            if (existeSolapamiento) {
+              agendasSolapadas++;
+            } else {
+              const agenda: Agenda = {
+                uidMedico: agendaForm.uidMedico,
+                fecha: current.toISOString().split('T')[0],
+                horaInicio,
+                horaFin,
+                disponible: agendaForm.disponible,
+                medicoNombre
+              };
+              // eslint-disable-next-line no-await-in-loop
+              await this.agendaService.addAgenda(agenda).toPromise();
+              agendasCreadas++;
+            }
           }
           current.setDate(current.getDate() + 1);
         }
         if (agendasCreadas === 0) {
-          this.mensajeError = 'No hay días válidos en el rango seleccionado según los días de la semana marcados.';
+          this.mensajeError = 'No se pudo crear ninguna agenda (todas solapan con agendas existentes).';
           return;
+        }
+        if (agendasSolapadas > 0) {
+          this.mensajeError = `${agendasSolapadas} agendas no se crearon por solapamiento.`;
         }
       }
       this.cargarAgendasMedico(agendaForm.uidMedico);
@@ -210,6 +230,7 @@ export class AgendaFormComponent implements OnInit, OnChanges, AfterViewInit {
       this.horaInicioBloque = '';
       this.horaFinBloque = '';
       this.diasSeleccionados = [false, false, false, false, false, false, false];
+      return;
     } else {
       if (this.formAgenda.valid) {
         const agendaForm = this.formAgenda.value;

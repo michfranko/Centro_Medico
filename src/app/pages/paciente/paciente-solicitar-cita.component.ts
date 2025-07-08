@@ -80,40 +80,40 @@ export class PacienteSolicitarCitaComponent implements OnInit {
       return;
     }
 
-    const agendaSeleccionada = this.agendasDisponibles.find(a => a.id === this.form.value.agendaId);
-    if (!agendaSeleccionada) {
+    // Buscar la agenda seleccionada asegurando comparación robusta de tipos
+    const agendaSeleccionada = this.agendasDisponibles.find(a => a.id == this.form.value.agendaId);
+    if (!agendaSeleccionada || agendaSeleccionada.disponible !== true) {
       this.mensaje = 'Agenda seleccionada no válida o ya no está disponible.';
       return;
     }
 
-    const cita = {
-      pacienteId: Number(usuario.uid),
-      medicoId: Number(this.form.value.medicoId),
-      medicoNombre: this.nombreMedicoSeleccionado,
-      fecha: agendaSeleccionada.fecha,
-      hora: agendaSeleccionada.horaInicio,
-      motivo: this.form.value.motivo,
-      estado: 'pendiente',
-      creadaEn: new Date().toISOString()
-    };
-
-    this.citasService.solicitarCita(cita, Number(agendaSeleccionada.id)).subscribe({
-      next: () => {
-        // Obtener datos del paciente
-        this.pacienteService.getPacienteById(Number(usuario.uid)).subscribe({
-          next: (paciente) => {
-            if (paciente) {
-              this.notificacionesService.enviarCorreo(
-                paciente.email,
-                `Su solicitud de cita para el día ${cita.fecha} a las ${cita.hora} está pendiente de confirmación.`
-              );
-            }
+    // Buscar paciente por UID de Firebase para obtener el id numérico
+    this.pacienteService.getPacienteByUid(usuario.uid).subscribe({
+      next: (paciente: any) => {
+        if (!paciente || !paciente.id) {
+          this.mensaje = 'No se encontró el paciente en el sistema.';
+          return;
+        }
+        // Adaptar el body al formato esperado por el backend
+        const citaPayload = {
+          pacienteId: paciente.id,
+          motivo: this.form.value.motivo,
+          estado: 'pendiente'
+        };
+        console.log('Cita enviada al backend:', citaPayload);
+        this.citasService.solicitarCita(citaPayload, Number(agendaSeleccionada.id)).subscribe({
+          next: () => {
+            // Notificar al paciente
+            this.notificacionesService.enviarCorreo(
+              paciente.email,
+              `Su solicitud de cita para el día ${agendaSeleccionada.fecha} a las ${agendaSeleccionada.horaInicio} está pendiente de confirmación.`
+            );
             // Notificar a todos los administradores
             this.adminService.getAdmins().subscribe(admins => {
               admins.forEach(admin => {
                 this.notificacionesService.enviarCorreo(
                   admin.email,
-                  `Nueva solicitud de cita pendiente de confirmación para el paciente ${paciente?.nombre || usuario.email}.`
+                  `Nueva solicitud de cita pendiente de confirmación para el paciente ${paciente.nombre || usuario.email}.`
                 );
               });
             });
@@ -122,14 +122,17 @@ export class PacienteSolicitarCitaComponent implements OnInit {
             this.form.reset();
             this.agendasDisponibles = [];
           },
-          error: () => {
-            this.mensaje = '❌ Error al obtener datos del paciente.';
+          error: (error) => {
+            if (error?.error?.message?.includes('ocupada') || error?.error?.message?.includes('no existe')) {
+              this.mensaje = '❌ La agenda ya está ocupada o no existe. Por favor, seleccione otra.';
+            } else {
+              this.mensaje = '❌ Error al solicitar cita. Intente más tarde.';
+            }
           }
         });
       },
-      error: (error) => {
-        console.error(error);
-        this.mensaje = '❌ Error al solicitar cita. Intente más tarde.';
+      error: () => {
+        this.mensaje = '❌ Error al obtener datos del paciente.';
       }
     });
   }

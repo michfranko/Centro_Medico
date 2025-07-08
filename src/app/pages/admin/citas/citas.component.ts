@@ -20,7 +20,7 @@ export class CitasComponent implements OnInit {
   }
 
   obtenerCitasPendientes(): void {
-    this.citasService.getCitasConNombres().subscribe(citas => {
+    this.citasService.getCitas().subscribe(citas => {
       this.citasPendientes = citas.filter(cita => cita.estado === 'pendiente');
       this.loading = false;
     });

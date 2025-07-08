@@ -53,12 +53,13 @@ export class CitasService {
   }
 
   // Métodos para agendar/cancelar cita si tu backend los expone
-  solicitarCita(cita: Cita, idAgenda: number): Observable<any> {
-    return this.http.post(`${this.apiUrl}/solicitar/${idAgenda}`, cita);
-  }
+  // solicitarCita(cita: Cita, idAgenda: number): Observable<any> {
+  //   return this.http.post(`${this.apiUrl}/solicitar/${idAgenda}`, cita);
+  // }
 
-  cancelarCita(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  // Solicitar cita usando el endpoint correcto y el body esperado
+  solicitarCita(cita: any, agendaId: number): Observable<any> {
+    return this.http.post(`${this.apiUrl}/solicitar/${agendaId}`, cita);
   }
 }
 
