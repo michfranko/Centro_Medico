@@ -40,4 +40,6 @@ export class PacienteService {
   getPacienteByUid(uid: string): Observable<Paciente> {
     return this.http.get<Paciente>(`http://localhost:8081/api/usuarios/uid/${uid}`);
   }
+
+
 }

@@ -5,6 +5,7 @@ import { Paciente } from '../models/paciente.model';
 import { Administrador } from '../models/admin.model';
 import { map } from 'rxjs/operators';
 import { Auth } from '@angular/fire/auth';
+import { Usuario } from '../models/usuario.model';
 import { createUserWithEmailAndPassword, UserCredential } from 'firebase/auth';
 
 @Injectable({ providedIn: 'root' })
@@ -103,4 +104,10 @@ export class UsuarioService {
         .catch(err => observer.error(err));
     });
   }
+
+ getUsuarioByUid(uid: string): Observable<Usuario> {
+  return this.http.get<Usuario>(`${this.apiUrl}/uid/${uid}`);
+}
+
+
 }

@@ -31,4 +31,8 @@ export class MedicoService {
   deleteMedico(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
+
+
+
+
 }

@@ -39,4 +39,9 @@ addAgenda(agenda: Agenda): Observable<Agenda> {
   actualizarAgenda(id: number, cambios: Partial<Agenda>): Observable<Agenda> {
     return this.http.patch<Agenda>(`${this.apiUrl}/${id}`, cambios);
   }
+
+  getAgendaById(id: number): Observable<any> {
+  return this.http.get<any>(`http://localhost:8081/api/agendas/${id}`);
+}
+
 }

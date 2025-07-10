@@ -7,12 +7,12 @@
 
   <ul *ngIf="citas.length > 0">
     <li *ngFor="let cita of citas">
-      <strong>Médico:</strong> {{ cita?.medicoNombre }} <br>
-      <strong>Fecha:</strong> {{ cita?.fecha | date:'medium' }} <br>
-      <strong>Estado:</strong> {{ cita?.estado }} <br>
-     <button (click)="eliminarCita(cita)">Cancelar</button>
-
-
+      <strong>Médico:</strong> {{ cita.medicoNombre }} <br>
+      <strong>Fecha:</strong> {{ cita.fecha | date:'longDate' }}<br>
+      <strong>Hora:</strong> {{ cita.horaInicio }} - {{ cita.horaFin }} <br>
+      <strong>Motivo:</strong> {{ cita.motivo }} <br>
+      <strong>Estado:</strong> {{ cita.estado }} <br>
+      <button (click)="eliminarCita(cita)">Cancelar</button>
     </li>
   </ul>
 </ng-container>

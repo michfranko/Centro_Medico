@@ -4,12 +4,13 @@ import { MedicoService } from '../../services/medico.service';
 import { CitasService } from '../../services/citas.service';
 import { AgendaService } from '../../services/agenda.service';
 import { Medico } from '../../models/medico.model';
-import { Agenda } from '../../models/agenda.model';
+import { Agenda } from '../../models/agenda.model'; // Importa Agenda desde su ubicación correcta
+import { SolicitudCita } from '../../models/cita.model'; // Importa SolicitudCita
 import { Auth } from '@angular/fire/auth';
 import { CommonModule } from '@angular/common';
 import { NotificacionesService } from '../../services/notificaciones.service';
-import { AdminService } from '../../services/admin.service';
 import { PacienteService } from '../../services/paciente.service';
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-paciente-solicitar-cita',
@@ -24,6 +25,7 @@ export class PacienteSolicitarCitaComponent implements OnInit {
   agendasDisponibles: Agenda[] = [];
   mensaje: string = '';
   nombreMedicoSeleccionado: string = '';
+  isLoading: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -32,108 +34,147 @@ export class PacienteSolicitarCitaComponent implements OnInit {
     private agendaService: AgendaService,
     private auth: Auth,
     private notificacionesService: NotificacionesService,
-    private adminService: AdminService,
     private pacienteService: PacienteService
   ) {}
 
   ngOnInit(): void {
-    this.form = this.fb.group({
-      medicoId: ['', Validators.required],
-      agendaId: ['', Validators.required],
-      motivo: ['', [Validators.required, Validators.minLength(10)]]
-    });
-
+    this.initForm();
     this.loadMedicos();
+    this.setupMedicoSelectionListener();
+  }
 
-    // Cuando se selecciona un médico, carga sus agendas disponibles
+  private initForm(): void {
+    this.form = this.fb.group({
+  medicoId: [null, Validators.required],
+  agendaId: [null, Validators.required],
+  motivo: ['', [Validators.required, Validators.minLength(10)]]
+  });
+
+  }
+
+  private setupMedicoSelectionListener(): void {
     this.form.get('medicoId')?.valueChanges.subscribe(medicoId => {
-      const medico = this.medicos.find(m => m.id === medicoId);
-      this.nombreMedicoSeleccionado = medico?.nombre || '';
-      this.cargarAgendasDisponibles(medicoId);
-      this.form.get('agendaId')?.setValue(''); // Limpiar selección anterior
+      if (medicoId) {
+        const medico = this.medicos.find(m => m.id === medicoId);
+        this.nombreMedicoSeleccionado = medico?.nombre || '';
+        this.cargarAgendasDisponibles(medicoId);
+        this.form.get('agendaId')?.setValue('');
+      }
     });
   }
 
-  loadMedicos() {
-    this.medicoService.getMedicos().subscribe((lista: Medico[]) => {
-      this.medicos = lista;
-    });
+  loadMedicos(): void {
+    this.isLoading = true;
+    this.medicoService.getMedicos()
+      .pipe(finalize(() => this.isLoading = false))
+      .subscribe({
+        next: (medicos: Medico[]) => this.medicos = medicos,
+        error: () => this.mensaje = '❌ Error al cargar los médicos. Intente más tarde.'
+      });
   }
 
-  cargarAgendasDisponibles(medicoId: string | number) {
-    this.agendaService.getAgendasByMedico(Number(medicoId)).subscribe((agendas: Agenda[]) => {
-      this.agendasDisponibles = agendas.filter(a => a.disponible);
-    });
+  cargarAgendasDisponibles(medicoId: number): void {
+    this.isLoading = true;
+    this.agendaService.getAgendasByMedico(medicoId)
+      .pipe(finalize(() => this.isLoading = false))
+      .subscribe({
+        next: (agendas: Agenda[]) => {
+          this.agendasDisponibles = agendas.filter(a => a.disponible);
+          if (this.agendasDisponibles.length === 0) {
+            this.mensaje = 'No hay horarios disponibles para este médico.';
+          }
+        },
+        error: () => this.mensaje = '❌ Error al cargar los horarios disponibles.'
+      });
   }
 
-  solicitarCita() {
+  solicitarCita(): void {
     this.mensaje = '';
-
+    
     if (this.form.invalid) {
-      this.mensaje = 'Por favor, complete todos los campos correctamente.';
+      this.marcarControlesComoTouched();
+      this.mensaje = '❌ Por favor, complete todos los campos correctamente.';
       return;
     }
 
     const usuario = this.auth.currentUser;
     if (!usuario) {
-      this.mensaje = 'Debe estar autenticado para solicitar una cita.';
+      this.mensaje = '❌ Debe estar autenticado para solicitar una cita.';
       return;
     }
 
-    // Buscar la agenda seleccionada asegurando comparación robusta de tipos
-    const agendaSeleccionada = this.agendasDisponibles.find(a => a.id == this.form.value.agendaId);
-    if (!agendaSeleccionada || agendaSeleccionada.disponible !== true) {
-      this.mensaje = 'Agenda seleccionada no válida o ya no está disponible.';
+    const agendaSeleccionada = this.agendasDisponibles.find(a => a.id === this.form.value.agendaId);
+    
+    // Verificación estricta según tu modelo Agenda
+    if (!agendaSeleccionada || 
+        agendaSeleccionada.disponible !== true || 
+        !agendaSeleccionada.id || 
+        !agendaSeleccionada.fecha || 
+        !agendaSeleccionada.horaInicio || 
+        !agendaSeleccionada.horaFin) {
+      this.mensaje = '❌ La agenda seleccionada no es válida o no está disponible.';
       return;
     }
 
-    // Buscar paciente por UID de Firebase para obtener el id numérico
-    this.pacienteService.getPacienteByUid(usuario.uid).subscribe({
-      next: (paciente: any) => {
-        if (!paciente || !paciente.id) {
-          this.mensaje = 'No se encontró el paciente en el sistema.';
-          return;
-        }
-        // Adaptar el body al formato esperado por el backend
-        const citaPayload = {
-          pacienteId: paciente.id,
-          motivo: this.form.value.motivo,
-          estado: 'pendiente'
-        };
-        console.log('Cita enviada al backend:', citaPayload);
-        this.citasService.solicitarCita(citaPayload, Number(agendaSeleccionada.id)).subscribe({
-          next: () => {
-            // Notificar al paciente
-            this.notificacionesService.enviarCorreo(
-              paciente.email,
-              `Su solicitud de cita para el día ${agendaSeleccionada.fecha} a las ${agendaSeleccionada.horaInicio} está pendiente de confirmación.`
-            );
-            // Notificar a todos los administradores
-            this.adminService.getAdmins().subscribe(admins => {
-              admins.forEach(admin => {
-                this.notificacionesService.enviarCorreo(
-                  admin.email,
-                  `Nueva solicitud de cita pendiente de confirmación para el paciente ${paciente.nombre || usuario.email}.`
-                );
-              });
-            });
-            this.notificacionesService.enviarWhatsApp('whatsapp-del-paciente', 'Su cita ha sido solicitada.');
-            this.mensaje = '✅ Cita solicitada correctamente. Se ha enviado un correo de notificación al paciente y a los administradores.';
-            this.form.reset();
-            this.agendasDisponibles = [];
-          },
-          error: (error) => {
-            if (error?.error?.message?.includes('ocupada') || error?.error?.message?.includes('no existe')) {
-              this.mensaje = '❌ La agenda ya está ocupada o no existe. Por favor, seleccione otra.';
-            } else {
-              this.mensaje = '❌ Error al solicitar cita. Intente más tarde.';
-            }
+    this.isLoading = true;
+    this.pacienteService.getPacienteByUid(usuario.uid)
+      .pipe(finalize(() => this.isLoading = false))
+      .subscribe({
+        next: (paciente: any) => {
+          if (!paciente?.id) {
+            this.mensaje = '❌ No se encontró el paciente en el sistema.';
+            return;
           }
-        });
-      },
-      error: () => {
-        this.mensaje = '❌ Error al obtener datos del paciente.';
-      }
+
+          // Creación del payload adaptado a tu modelo Agenda
+          const citaPayload: SolicitudCita = {
+            pacienteId: paciente.id,
+            medicoId: agendaSeleccionada.medico?.id! || this.form.value.medicoId,
+            agendaId: agendaSeleccionada.id!, // Aquí aseguramos que es number
+            motivo: this.form.value.motivo,
+            estado: 'pendiente',
+            fecha: agendaSeleccionada.fecha,
+            horaInicio: agendaSeleccionada.horaInicio,
+            horaFin: agendaSeleccionada.horaFin
+          };
+
+          this.isLoading = true;
+          this.citasService.solicitarCita(citaPayload)
+            .pipe(finalize(() => this.isLoading = false))
+            .subscribe({
+              next: () => this.onCitaSolicitadaExitosamente(),
+              error: (error) => this.handleCitaError(error)
+            });
+        },
+        error: () => {
+          this.mensaje = '❌ Error al obtener datos del paciente.';
+        }
+      });
+  }
+
+  private onCitaSolicitadaExitosamente(): void {
+    this.mensaje = '✅ Cita solicitada correctamente.';
+    this.notificacionesService.mostrarNotificacion('Cita agendada', 'Su cita ha sido solicitada con éxito', 'success');
+    this.form.reset();
+    this.agendasDisponibles = [];
+    this.nombreMedicoSeleccionado = '';
+  }
+
+  private handleCitaError(error: any): void {
+    console.error('Error al solicitar cita:', error);
+    
+    if (error?.error?.message) {
+      this.mensaje = `❌ ${error.error.message}`;
+    } else if (error?.error) {
+      this.mensaje = `❌ ${error.error}`;
+    } else {
+      this.mensaje = '❌ Error al solicitar cita. Intente más tarde.';
+    }
+  }
+
+  private marcarControlesComoTouched(): void {
+    Object.values(this.form.controls).forEach(control => {
+      control.markAsTouched();
     });
   }
 }
