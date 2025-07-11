@@ -107,7 +107,7 @@ export class PacienteFormComponent implements OnChanges {
         nombre: this.paciente.nombre,
         direccion: this.paciente.direccion,
         contacto: this.paciente.contacto,
-        fechaNacimiento: this.paciente.fechaNacimiento,
+        fecha_nacimiento: this.paciente.fechaNacimiento || this.paciente.fechaNacimiento || '',
         email: this.paciente.email
       });
       // Quitar validadores de password en edición
@@ -121,57 +121,67 @@ export class PacienteFormComponent implements OnChanges {
     }
   }
 
-  async onSubmit(): Promise<void> {
-    if (this.form.invalid) return;
-    const formData = this.form.value;
-    let fechaFormateada = '';
-    if (formData.fechaNacimiento) {
-      const date = new Date(formData.fechaNacimiento);
-      fechaFormateada = `${date.getFullYear()}-${(date.getMonth()+1).toString().padStart(2,'0')}-${date.getDate().toString().padStart(2,'0')}`;
-    }
-    if (this.paciente && this.paciente.uid) {
-      // Actualizar paciente existente
-      const pacienteActualizado: any = {
-        ...this.paciente,
-        nombre: formData.nombre,
-        direccion: formData.direccion,
-        contacto: formData.contacto,
-        fecha_nacimiento: fechaFormateada,
-        email: formData.email,
-        rol: 'paciente'
-      };
-      // Usar id si existe, si no usar uid
-      const idToUpdate = this.paciente.id ?? this.paciente.uid;
-      this.usuarioService.updateUsuario(Number(idToUpdate), pacienteActualizado).subscribe({
-        next: () => this.formSubmit.emit(),
-        error: () => alert('Error al actualizar el paciente.')
-      });
-    } else {
-      // Registrar nuevo paciente en Firebase Auth y luego en backend
-      try {
-        const credential = await createUserWithEmailAndPassword(this.auth, formData.email, formData.password);
-        // Codificar la contraseña en base64 antes de enviarla al backend
-        const passwordEncoded = btoa(formData.password);
-        const nuevoPaciente: any = {
-          nombre: formData.nombre,
-          direccion: formData.direccion,
-          contacto: formData.contacto,
-          fecha_nacimiento: fechaFormateada,
-          email: formData.email,
-          password: passwordEncoded,
-          rol: 'paciente',
-          uid: credential.user.uid
-        };
-        this.usuarioService.createUsuario(nuevoPaciente).subscribe({
-          next: () => this.formSubmit.emit(),
-          error: () => alert('Error al registrar el paciente en el backend.')
-        });
-      } catch (error: any) {
-        alert('Error al registrar el paciente en Firebase: ' + (error?.message || error));
-      }
-    }
-    this.form.reset();
+onSubmit(): void {
+  if (this.form.invalid) {
+    alert('Por favor completa todos los campos obligatorios.');
+    return;
   }
+
+  const formData = this.form.value;
+  console.log('Formulario recibido:', formData);
+
+  // Formatear la fecha
+  let fechaFormateada = '';
+  if (formData.fechaNacimiento) {
+    const date = new Date(formData.fechaNacimiento);
+    fechaFormateada = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
+  }
+
+  if (this.paciente && this.paciente.uid) {
+    // 🔁 Modo edición
+    const pacienteActualizado: any = {
+      ...this.paciente,
+      nombre: formData.nombre,
+      direccion: formData.direccion,
+      contacto: formData.contacto,
+      fecha_nacimiento: fechaFormateada,
+      email: formData.email,
+      rol: 'paciente'
+    };
+    const idToUpdate = this.paciente.id ?? this.paciente.uid;
+    this.usuarioService.updateUsuario(Number(idToUpdate), pacienteActualizado).subscribe({
+      next: () => this.formSubmit.emit(),
+      error: (err) => {
+        console.error('Error al actualizar paciente:', err);
+        alert('Error al actualizar el paciente.');
+      }
+    });
+  } else {
+    // ✅ Registro nuevo paciente
+    const nuevoPaciente: any = {
+      nombre: formData.nombre,
+      direccion: formData.direccion,
+      contacto: formData.contacto,
+      fecha_nacimiento: fechaFormateada,
+      email: formData.email,
+      password: formData.password,
+      rol: 'paciente'
+    };
+
+    this.usuarioService.createUsuario(nuevoPaciente).subscribe({
+      next: () => {
+        alert('Paciente registrado exitosamente.');
+        this.formSubmit.emit();
+        this.form.reset();
+      },
+      error: (err) => {
+        console.error('Error al guardar en backend:', err);
+        alert('Error al registrar el paciente en el backend.');
+      }
+    });
+  }
+}
+
 
   cancelar() {
     window.location.reload();

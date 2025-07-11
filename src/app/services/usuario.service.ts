@@ -73,35 +73,33 @@ export class UsuarioService {
     return this.http.delete<void>(`${this.apiUrl}/${uid}`);
   }
 
-  createUsuario(usuario: Paciente | Administrador & { password?: string }): Observable<Paciente | Administrador> {
+  createUsuario(usuario: Usuario & { password?: string }): Observable<any> {
+    if (!usuario.password) {
+      throw new Error('La contraseña es obligatoria para crear un usuario.');
+    }
     return new Observable(observer => {
-      // 1. Crear usuario en Firebase Auth
-      if (!usuario.email || !usuario.password) {
-        observer.error('Email y contraseña son requeridos');
-        return;
-      }
-      createUserWithEmailAndPassword(this.auth, usuario.email, usuario.password)
-        .then((userCredential: UserCredential) => {
-          // 2. Guardar en la base de datos/backend
-          const payload = {
-            ...usuario,
-            uid: userCredential.user.uid,
-            email: userCredential.user.email,
+      createUserWithEmailAndPassword(this.auth, usuario.email, usuario.password!)
+        .then(async (userCredential: UserCredential) => {
+          const token = await userCredential.user.getIdToken();
+          const usuarioParaBackend = {
+            token: token,
+            nombre: usuario.nombre,
+            direccion: usuario.direccion,
+            rol: usuario.rol,
+            contacto: usuario.contacto,
+            fecha_nacimiento: usuario.fecha_nacimiento
           };
-          delete payload.password;
-          userCredential.user.getIdToken().then(token => {
-            const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
-            this.http.post<Paciente | Administrador>(this.apiUrl, payload, { headers })
-              .subscribe({
-                next: res => {
-                  observer.next(res);
-                  observer.complete();
-                },
-                error: err => observer.error(err)
-              });
-          });
+
+          this.http.post('http://localhost:8081/api/auth/register', usuarioParaBackend)
+            .subscribe({
+              next: (res) => {
+                observer.next(res);
+                observer.complete();
+              },
+              error: (err) => observer.error(err)
+            });
         })
-        .catch(err => observer.error(err));
+        .catch(error => observer.error(error));
     });
   }
 

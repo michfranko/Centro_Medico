@@ -127,13 +127,14 @@ export class PacienteSolicitarCitaComponent implements OnInit {
           }
 
           // Creación del payload adaptado a tu modelo Agenda
+          const fechaFormateada = new Date(agendaSeleccionada.fecha).toISOString().split('T')[0];
           const citaPayload: SolicitudCita = {
             pacienteId: paciente.id,
             medicoId: agendaSeleccionada.medico?.id! || this.form.value.medicoId,
             agendaId: agendaSeleccionada.id!, // Aquí aseguramos que es number
             motivo: this.form.value.motivo,
             estado: 'pendiente',
-            fecha: agendaSeleccionada.fecha,
+            fecha: fechaFormateada,
             horaInicio: agendaSeleccionada.horaInicio,
             horaFin: agendaSeleccionada.horaFin
           };
