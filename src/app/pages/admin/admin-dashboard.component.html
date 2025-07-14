@@ -20,7 +20,8 @@
         <li><a routerLink="medicos" routerLinkActive="active">Médicos</a></li>
         <li><a routerLink="Admin" routerLinkActive="active">Administradores</a></li>
         <li><a routerLink="agenda" routerLinkActive="active">Agenda</a></li>
-        <li><a routerLink="citas" routerLinkActive="active">Solicitudes de Citas</a></li>
+        <li><a routerLink="solicitudes-citas" routerLinkActive="active">Solicitudes de Citas</a></li>
+        <li><a routerLink="historial-citas" routerLinkActive="active">Historial de Citas</a></li>
         <li><a (click)="logout()">Cerrar sesión</a></li>
       </ul>
     </nav>
@@ -39,7 +40,8 @@
         <li><a routerLink="medicos" routerLinkActive="active" (click)="cerrarMenu()">Médicos</a></li>
         <li><a routerLink="Admin" routerLinkActive="active" (click)="cerrarMenu()">Administradores</a></li>
         <li><a routerLink="agenda" routerLinkActive="active" (click)="cerrarMenu()">Agenda</a></li>
-        <li><a routerLink="citas" routerLinkActive="active" (click)="cerrarMenu()">Solicitudes de Citas</a></li>
+        <li><a routerLink="solicitudes-citas" routerLinkActive="active" (click)="cerrarMenu()">Solicitudes de Citas</a></li>
+        <li><a routerLink="historial-citas" routerLinkActive="active" (click)="cerrarMenu()">Historial de Citas</a></li>
         <li><a (click)="logout(); cerrarMenu()">Cerrar sesión</a></li>
       </ul>
     </nav>

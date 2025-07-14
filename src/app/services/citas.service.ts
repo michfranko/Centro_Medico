@@ -1,13 +1,18 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
 
+import { Medico } from '../models/medico.model';
+import { Paciente } from '../models/paciente.model';
+
 export interface Cita {
   id?: number;
-  pacienteId: number;
+  paciente?: Paciente;
+  medico?: Medico;
+  pacienteId?: number;
   pacienteNombre?: string;
-  medicoId: number;
+  medicoId?: number;
   medicoNombre?: string;
   agendaId: number;
   fecha: string;
@@ -27,7 +32,6 @@ export interface SolicitudCita {
   estado?: string;
   fecha: string;
   horaInicio: string;
-  horaFin: string;
 }
 
 @Injectable({
@@ -44,7 +48,7 @@ export class CitasService {
    * @returns Observable con array de Cita
    */
   getCitas(): Observable<Cita[]> {
-    return this.http.get<Cita[]>(this.apiUrl)
+    return this.http.get<Cita[]>(`${this.apiUrl}/con-nombres`)
       .pipe(
         retry(this.retryCount),
         catchError(this.handleError)
@@ -82,11 +86,7 @@ export class CitasService {
    * @returns Observable con la Cita creada
    */
   solicitarCita(citaData: SolicitudCita): Observable<Cita> {
-    const payload = {
-      ...citaData,
-      estado: citaData.estado || 'pendiente' // Valor por defecto
-    };
-
+    const { ...payload } = citaData;
     return this.http.post<Cita>(`${this.apiUrl}/solicitar`, payload)
       .pipe(
         catchError(this.handleError)
@@ -150,33 +150,18 @@ export class CitasService {
    */
   private handleError(error: HttpErrorResponse): Observable<never> {
     let errorMessage = 'Ocurrió un error en el servicio de citas';
-    
+
     if (error.error instanceof ErrorEvent) {
-      // Error del lado del cliente
       errorMessage = `Error: ${error.error.message}`;
     } else {
-      // Error del lado del servidor
       errorMessage = `Código: ${error.status}`;
-      
-      // Mensajes específicos según código de estado
-      switch (error.status) {
-        case 400:
-          errorMessage += ' - Solicitud incorrecta';
-          break;
-        case 401:
-          errorMessage += ' - No autorizado';
-          break;
-        case 404:
-          errorMessage += ' - Recurso no encontrado';
-          break;
-        case 500:
-          errorMessage += ' - Error interno del servidor';
-          break;
-      }
-      
-      // Mensaje del backend si existe
-      if (error.error?.message) {
-        errorMessage += ` | Detalles: ${error.error.message}`;
+      if (error.error && typeof error.error === 'object') {
+        if (error.error.error) {
+          errorMessage += ` - ${error.error.error}`;
+        }
+        if (error.error.message) {
+          errorMessage += ` | Detalles: ${error.error.message}`;
+        }
       }
     }
     
@@ -196,8 +181,55 @@ getAgendaById(id: number): Observable<any> {
   return this.http.get<any>(`http://localhost:8081/api/agendas/${id}`);
 }
 
+  /**
+   * Obtiene citas aplicando filtros dinámicos
+   * @param filtros Objeto con los filtros a aplicar
+   * @returns Observable con array de Cita
+   */
+  getCitasFiltradas(filtros: any): Observable<Cita[]> {
+    let params = new HttpParams();
+    Object.keys(filtros).forEach(key => {
+      if (filtros[key]) {
+        params = params.append(key, filtros[key]);
+      }
+    });
 
+    return this.http.get<Cita[]>(`${this.apiUrl}/filtrar`, { params })
+      .pipe(
+        retry(this.retryCount),
+        catchError(this.handleError)
+      );
+  }
 
+  /**
+   * Descarga un reporte de citas en formato PDF
+   * @param filtros Filtros a aplicar al reporte
+   * @returns Observable con el blob del PDF
+   */
+  getReportePdf(filtros: any): Observable<Blob> {
+    let params = new HttpParams();
+    Object.keys(filtros).forEach(key => {
+      if (filtros[key]) {
+        params = params.append(key, filtros[key]);
+      }
+    });
 
+    return this.http.get(`http://localhost:8081/api/reportes/pdf`, { params, responseType: 'blob' });
+  }
 
+  /**
+   * Descarga un reporte de citas en formato Excel
+   * @param filtros Filtros a aplicar al reporte
+   * @returns Observable con el blob del Excel
+   */
+  getReporteExcel(filtros: any): Observable<Blob> {
+    let params = new HttpParams();
+    Object.keys(filtros).forEach(key => {
+      if (filtros[key]) {
+        params = params.append(key, filtros[key]);
+      }
+    });
+
+    return this.http.get(`http://localhost:8081/api/reportes/excel`, { params, responseType: 'blob' });
+  }
 }

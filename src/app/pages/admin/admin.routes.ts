@@ -6,6 +6,7 @@ import { MedicoListComponent } from './medicos/medico-list.component';
 import { AgendaListComponent } from './agenda/agenda-list.component';
 import { CitasComponent } from './citas/citas.component';
 import { AdminListComponent } from './Administradores/admin-list.component';
+import { SolicitudesCitasComponent } from './citas/solicitudes-citas.component';
 
 const routes: Routes = [
   {
@@ -16,7 +17,8 @@ const routes: Routes = [
       { path: 'medicos', component: MedicoListComponent },
       { path: 'Admin', component: AdminListComponent },
       { path: 'agenda', component: AgendaListComponent },
-      { path: 'citas', component: CitasComponent },
+      { path: 'historial-citas', component: CitasComponent },
+      { path: 'solicitudes-citas', component: SolicitudesCitasComponent },
       { path: '', redirectTo: 'pacientes', pathMatch: 'full' },
       
     ]

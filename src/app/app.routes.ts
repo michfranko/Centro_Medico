@@ -10,7 +10,6 @@ import { MedicoListComponent } from './pages/admin/medicos/medico-list.component
 import { PacienteListComponent } from './pages/admin/pacientes/paciente-list.component';
 import { AdminListComponent } from './pages/admin/Administradores/admin-list.component';
 import { AgendaListComponent } from './pages/admin/agenda/agenda-list.component';
-import { CitasComponent } from './pages/admin/citas/citas.component';
 import { ResetPasswordComponent } from './pages/reset-password/reset-password.component';
 
 export const routes: Routes = [
@@ -19,14 +18,7 @@ export const routes: Routes = [
   { path: 'reset-password', component: ResetPasswordComponent },
   {
     path: 'admin',
-    component: AdminDashboardComponent,
-    children: [
-      { path: 'medicos', component: MedicoListComponent },
-      { path: 'pacientes', component: PacienteListComponent },
-      { path: 'Admin', component: AdminListComponent },
-      { path: 'agenda', component: AgendaListComponent },
-      { path: 'citas', component: CitasComponent },
-    ]
+    loadChildren: () => import('./pages/admin/admin.routes').then(m => m.AdminRoutingModule)
   },
   {
     path: 'paciente',

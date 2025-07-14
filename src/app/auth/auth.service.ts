@@ -147,4 +147,16 @@ export class AuthService {
       map((user: User | null) => user?.uid || null)
     );
   }
+
+  async getPerfil(): Promise<any> {
+    const user = this.auth.currentUser;
+    if (user) {
+      const token = await user.getIdToken();
+      const headers = new HttpHeaders({
+        Authorization: `Bearer ${token}`
+      });
+      return this.http.get(this.backendUrl + `/perfil`, { headers }).toPromise();
+    }
+    return null;
+  }
 }

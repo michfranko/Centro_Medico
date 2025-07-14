@@ -1,7 +1,7 @@
 // src/app/models/medico.model.ts
 
 export interface Medico {
-  id?: string;             // ID generado por Firestore
+  id?: number;
   nombre: string;
   especialidad: string;
   correo: string;

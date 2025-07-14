@@ -1,118 +1,156 @@
-.citas-container {
-  padding: 20px;
-  max-width: 1000px;
-  margin: auto;
-  box-sizing: border-box;
+:host {
+  display: block;
+  padding: 2rem;
+  background-color: #f5f7fa;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
 }
 
+/* Títulos */
 h2 {
-  margin-bottom: 20px;
-  text-align: center;
+  color: #2c3e50;
+  font-weight: 600;
+  margin-bottom: 1rem;
 }
 
-.loading {
-  text-align: center;
-  font-style: italic;
+/* Botones */
+.btn {
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-weight: 500;
+  transition: background-color 0.3s, border-color 0.3s;
+  font-size: 0.95rem;
+  border: none;
+  color: #fff;
 }
 
-.citas-table {
-  width: 100%;
-  border-collapse: collapse;
-  background: white;
+.btn-secondary {
+  background-color: #6c757d;
+}
+
+.btn-secondary:hover {
+  background-color: #5a6268;
+}
+
+.btn-primary {
+  background-color: #007bff;
+}
+
+.btn-primary:hover {
+  background-color: #0069d9;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+}
+
+.btn-danger:hover {
+  background-color: #c82333;
+}
+
+.btn-success {
+  background-color: #28a745;
+}
+
+.btn-success:hover {
+  background-color: #218838;
+}
+
+.btn-light {
+  background-color: #e2e6ea;
+  color: #212529;
+}
+
+.btn-light:hover {
+  background-color: #d6d8db;
+}
+
+/* Tarjetas y formularios */
+.card {
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  background-color: #ffffff;
+}
+
+.card-body {
+  padding: 1.5rem;
+}
+
+.form-label {
+  font-weight: 500;
+  color: #444;
+}
+
+.form-control,
+.form-select {
+  border-radius: 6px;
+  border: 1px solid #ced4da;
+}
+
+/* Tabla */
+.table-responsive {
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 2px 6px rgb(0 0 0 / 0.1);
 }
 
-.citas-table th,
-.citas-table td {
-  border: 1px solid #ddd;
-  padding: 10px;
-  text-align: center;
-  font-size: 0.95rem;
-  word-wrap: break-word;
-  vertical-align: middle;
+.table {
+  margin-top: 1.5rem;
+  border-collapse: collapse;
+  width: 100%;
 }
 
-.citas-table th {
-  background-color: #f0f0f0;
+.table thead {
+  background-color: #e9ecef;
+}
+
+.table thead th {
+  padding: 0.75rem;
+  text-align: left;
   font-weight: 600;
+  color: #495057;
 }
 
-button {
-  margin: 0 5px;
-  padding: 6px 10px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  transition: opacity 0.3s ease;
-  white-space: nowrap;
+.table tbody tr {
+  background-color: #ffffff;
+  border-bottom: 1px solid #dee2e6;
+  transition: background-color 0.2s ease;
 }
 
-button:hover {
-  opacity: 0.9;
+.table tbody tr:hover {
+  background-color: #f1f3f5;
 }
 
-button.rechazar {
-  background-color: #f44336;
-  color: white;
+.table tbody td {
+  padding: 0.75rem;
+  vertical-align: middle;
+  color: #333;
 }
 
-button.eliminar {
-  background-color: #9e9e9e;
-  color: white;
-}
-
-/* Responsive para móviles */
+/* Responsive layout */
 @media (max-width: 768px) {
-
-  .citas-table {
-    border: 0;
-    box-shadow: none;
+  .d-flex {
+    flex-direction: column;
+    align-items: flex-start !important;
   }
 
-  .citas-table thead {
-    display: none;
-  }
-
-  .citas-table tbody tr {
-    display: block;
+  .d-flex h2 {
     margin-bottom: 1rem;
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 1px 3px rgb(0 0 0 / 0.1);
-    padding: 1rem;
   }
 
-  .citas-table tbody td {
+  .d-flex div {
+    width: 100%;
     display: flex;
-    justify-content: space-between;
-    padding: 0.5rem 0;
-    border: none;
-    border-bottom: 1px solid #eee;
-    position: relative;
-    text-align: left;
-    font-size: 0.9rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
   }
 
-  .citas-table tbody td:last-child {
-    border-bottom: 0;
-    padding-top: 0.75rem;
+  .btn {
+    width: 100%;
   }
 
-  .citas-table tbody td::before {
-    content: attr(data-label);
-    flex-basis: 40%;
-    font-weight: 600;
-    color: #555;
-    padding-right: 1rem;
-    white-space: nowrap;
-  }
-
-  button {
-    margin: 0 3px 0 0;
-    padding: 6px 8px;
-    font-size: 0.85rem;
+  .text-end {
+    text-align: start !important;
+    margin-top: 1rem;
   }
 }

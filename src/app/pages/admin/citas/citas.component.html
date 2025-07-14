@@ -1,37 +1,56 @@
-<div class="citas-container">
-  <h2>Solicitudes de Citas Pendientes</h2>
-
-  <div *ngIf="loading" class="loading">Cargando citas...</div>
-
-  <div *ngIf="!loading && citasPendientes.length === 0">
-    No hay citas pendientes por revisar.
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Historial de Citas</h2>
+    <div>
+      <button class="btn btn-secondary me-2" (click)="toggleFiltros()">
+        {{ filtrosVisibles ? 'Ocultar' : 'Mostrar' }} Filtros
+      </button>
+      <button class="btn btn-danger me-2" (click)="descargarPdf()">PDF</button>
+      <button class="btn btn-success" (click)="descargarExcel()">Excel</button>
+    </div>
   </div>
 
-  <div *ngIf="!loading && citasPendientes.length > 0">
-    <table class="citas-table">
-      <thead>
-        <tr>
-          <th>Paciente</th>
-          <th>Médico</th>
-          <th>Fecha</th>
-          <th>Hora</th>
-          <th>Motivo</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let cita of citasPendientes">
-          <td>{{ cita.pacienteNombre }}</td>
-          <td>{{ cita.medicoNombre }}</td>
-          <td>{{ cita.fecha }}</td>
-          <td>{{ cita.horaInicio }}</td>
-          <td>{{ cita.motivo }}</td>
-          <td>
-            <button (click)="confirmarCita(cita.id!)">Confirmar</button>
-            <button (click)="rechazarCita(cita.id!)" class="rechazar">Rechazar</button>
-          </td>
-        </tr>
-      </tbody>
+  <div class="card mb-4" *ngIf="filtrosVisibles">
+    <div class="card-body">
+      <form (ngSubmit)="aplicarFiltros()" class="row g-3">
+        <div class="col-md-6">
+          <label for="pacienteNombre" class="form-label">Paciente</label>
+          <input type="text" class="form-control" id="pacienteNombre" [(ngModel)]="filtros.pacienteNombre" name="pacienteNombre">
+        </div>
+        <div class="col-md-6">
+          <label for="medicoNombre" class="form-label">Médico</label>
+          <input type="text" class="form-control" id="medicoNombre" [(ngModel)]="filtros.medicoNombre" name="medicoNombre">
+        </div>
+        <div class="col-12 text-end">
+          <button type="button" class="btn btn-light me-2" (click)="limpiarFiltros()">Limpiar</button>
+          <button type="submit" class="btn btn-primary">Aplicar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Paciente</th>
+        <th>Médico</th>
+        <th>Fecha</th>
+        <th>Motivo</th>
+        <th>Estado</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let cita of citas">
+        <td>{{ cita.id }}</td>
+        <td>{{ cita.pacienteNombre }}</td>
+        <td>{{ cita.medicoNombre }}</td>
+        <td>{{ cita.fecha | date: 'dd/MM/yyyy' }}</td>
+        <td>{{ cita.motivo }}</td>
+        <td>{{ cita.estado }}</td>
+      </tr>
+    </tbody>
     </table>
   </div>
 </div>

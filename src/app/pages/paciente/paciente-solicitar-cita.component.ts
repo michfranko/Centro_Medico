@@ -89,69 +89,77 @@ export class PacienteSolicitarCitaComponent implements OnInit {
   }
 
   solicitarCita(): void {
-    this.mensaje = '';
-    
-    if (this.form.invalid) {
-      this.marcarControlesComoTouched();
-      this.mensaje = '❌ Por favor, complete todos los campos correctamente.';
-      return;
-    }
+  this.mensaje = '';
 
-    const usuario = this.auth.currentUser;
-    if (!usuario) {
-      this.mensaje = '❌ Debe estar autenticado para solicitar una cita.';
-      return;
-    }
-
-    const agendaSeleccionada = this.agendasDisponibles.find(a => a.id === this.form.value.agendaId);
-    
-    // Verificación estricta según tu modelo Agenda
-    if (!agendaSeleccionada || 
-        agendaSeleccionada.disponible !== true || 
-        !agendaSeleccionada.id || 
-        !agendaSeleccionada.fecha || 
-        !agendaSeleccionada.horaInicio || 
-        !agendaSeleccionada.horaFin) {
-      this.mensaje = '❌ La agenda seleccionada no es válida o no está disponible.';
-      return;
-    }
-
-    this.isLoading = true;
-    this.pacienteService.getPacienteByUid(usuario.uid)
-      .pipe(finalize(() => this.isLoading = false))
-      .subscribe({
-        next: (paciente: any) => {
-          if (!paciente?.id) {
-            this.mensaje = '❌ No se encontró el paciente en el sistema.';
-            return;
-          }
-
-          // Creación del payload adaptado a tu modelo Agenda
-          const fechaFormateada = new Date(agendaSeleccionada.fecha).toISOString().split('T')[0];
-          const citaPayload: SolicitudCita = {
-            pacienteId: paciente.id,
-            medicoId: agendaSeleccionada.medico?.id! || this.form.value.medicoId,
-            agendaId: agendaSeleccionada.id!, // Aquí aseguramos que es number
-            motivo: this.form.value.motivo,
-            estado: 'pendiente',
-            fecha: fechaFormateada,
-            horaInicio: agendaSeleccionada.horaInicio,
-            horaFin: agendaSeleccionada.horaFin
-          };
-
-          this.isLoading = true;
-          this.citasService.solicitarCita(citaPayload)
-            .pipe(finalize(() => this.isLoading = false))
-            .subscribe({
-              next: () => this.onCitaSolicitadaExitosamente(),
-              error: (error) => this.handleCitaError(error)
-            });
-        },
-        error: () => {
-          this.mensaje = '❌ Error al obtener datos del paciente.';
-        }
-      });
+  if (this.form.invalid) {
+    this.marcarControlesComoTouched();
+    this.mensaje = '❌ Por favor, complete todos los campos correctamente.';
+    return;
   }
+
+  const usuario = this.auth.currentUser;
+  if (!usuario) {
+    this.mensaje = '❌ Debe estar autenticado para solicitar una cita.';
+    return;
+  }
+
+  const agendaSeleccionada = this.agendasDisponibles.find(a => a.id === this.form.value.agendaId);
+
+  if (!agendaSeleccionada || 
+      agendaSeleccionada.disponible !== true || 
+      !agendaSeleccionada.id || 
+      !agendaSeleccionada.fecha || 
+      !agendaSeleccionada.horaInicio || 
+      !agendaSeleccionada.horaFin) {
+    this.mensaje = '❌ La agenda seleccionada no es válida o no está disponible.';
+    return;
+  }
+
+  this.isLoading = true;
+  this.pacienteService.getPacienteByUid(usuario.uid)
+    .pipe(finalize(() => this.isLoading = false))
+    .subscribe({
+      next: (paciente: any) => {
+        if (!paciente?.id) {
+          this.mensaje = '❌ No se encontró el paciente en el sistema.';
+          return;
+        }
+
+        // Formatear fecha como YYYY-MM-DD
+        const fecha = new Date(agendaSeleccionada.fecha);
+        const fechaFormateada = fecha.toISOString().split('T')[0];
+
+        // Asegurar horaInicio y horaFin en formato HH:mm:ss
+        const horaInicioFormateada = this.formatHora(agendaSeleccionada.horaInicio);
+        const horaFinFormateada = this.formatHora(agendaSeleccionada.horaFin);
+
+        const citaPayload: SolicitudCita = {
+          pacienteId: paciente.id,
+          medicoId: agendaSeleccionada.medico?.id! || this.form.value.medicoId,
+          agendaId: agendaSeleccionada.id!,
+          motivo: this.form.value.motivo,
+          estado: 'pendiente',
+          fecha: fechaFormateada,
+          horaInicio: horaInicioFormateada,
+          horaFin: horaFinFormateada
+        };
+
+        console.log('📤 Enviando citaPayload:', citaPayload); // para depuración
+
+        this.isLoading = true;
+        this.citasService.solicitarCita(citaPayload)
+          .pipe(finalize(() => this.isLoading = false))
+          .subscribe({
+            next: () => this.onCitaSolicitadaExitosamente(),
+            error: (error) => this.handleCitaError(error)
+          });
+      },
+      error: () => {
+        this.mensaje = '❌ Error al obtener datos del paciente.';
+      }
+    });
+}
+
 
   private onCitaSolicitadaExitosamente(): void {
     this.mensaje = '✅ Cita solicitada correctamente.';
@@ -178,4 +186,14 @@ export class PacienteSolicitarCitaComponent implements OnInit {
       control.markAsTouched();
     });
   }
+
+  private formatHora(hora: string | Date): string {
+  const date = new Date(`1970-01-01T${hora}`);
+  const horas = String(date.getHours()).padStart(2, '0');
+  const minutos = String(date.getMinutes()).padStart(2, '0');
+  const segundos = String(date.getSeconds()).padStart(2, '0');
+  return `${horas}:${minutos}:${segundos}`;
+}
+
+
 }

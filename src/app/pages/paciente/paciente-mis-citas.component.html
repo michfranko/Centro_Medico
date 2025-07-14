@@ -1,18 +1,30 @@
-<h2>Mis Citas Médicas</h2>
-
-<ng-container *ngIf="citas$ | async as citas">
-  <div *ngIf="citas.length === 0">
-    <p>No tienes citas agendadas.</p>
+<div class="container mt-4">
+  <h2>Mis Citas</h2>
+  <div *ngIf="citas.length > 0; else noCitas">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Médico</th>
+          <th>Fecha</th>
+          <th>Hora</th>
+          <th>Motivo</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let cita of citas">
+          <td>{{ cita.id }}</td>
+          <td>{{ cita.medico?.nombre}}</td>
+          <td>{{ cita.fecha | date: 'dd/MM/yyyy' }}</td>
+          <td>{{ cita.horaInicio }}</td>
+          <td>{{ cita.motivo }}</td>
+          <td>{{ cita.estado }}</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
-
-  <ul *ngIf="citas.length > 0">
-    <li *ngFor="let cita of citas">
-      <strong>Médico:</strong> {{ cita.medicoNombre }} <br>
-      <strong>Fecha:</strong> {{ cita.fecha | date:'longDate' }}<br>
-      <strong>Hora:</strong> {{ cita.horaInicio }} - {{ cita.horaFin }} <br>
-      <strong>Motivo:</strong> {{ cita.motivo }} <br>
-      <strong>Estado:</strong> {{ cita.estado }} <br>
-      <button (click)="eliminarCita(cita)">Cancelar</button>
-    </li>
-  </ul>
-</ng-container>
+  <ng-template #noCitas>
+    <p>No tiene citas programadas.</p>
+  </ng-template>
+</div>

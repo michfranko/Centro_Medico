@@ -1,51 +1,98 @@
-h2 {
-  margin-bottom: 1rem;
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+  background-color: #f8f9fa;
 }
 
+/* Tabla */
+.table {
+  margin-top: 1.5rem;
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table thead th {
+  background-color: #e9ecef;
+  padding: 0.75rem;
+  font-weight: 600;
+  text-align: left;
+  border-bottom: 2px solid #dee2e6;
+}
+
+.table tbody td {
+  padding: 0.75rem;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.table tbody tr:hover {
+  background-color: #f1f3f5;
+}
+
+/* Lista */
 ul {
-  list-style: none;
+  list-style-type: none;
   padding: 0;
+  margin: 0 auto;
 }
 
 li {
-  border: 1px solid #ddd;
+  background-color: #ffffff;
+  border: 1px solid #dee2e6;
   margin-bottom: 1rem;
-  padding: 1rem;
-  border-radius: 6px;
+  padding: 1.25rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  transition: box-shadow 0.2s ease-in-out;
 }
 
+li:hover {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+/* Botones */
 button {
-  background-color: #f44336;
-  color: white;
+  background-color: #dc3545;
+  color: #fff;
   border: none;
-  padding: 6px 12px;
+  padding: 8px 16px;
   cursor: pointer;
-  border-radius: 4px;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #c82333;
 }
 
 button:disabled {
-  background-color: #ccc;
+  background-color: #adb5bd;
   cursor: not-allowed;
 }
 
+/* Responsive */
 @media (min-width: 901px) {
   ul {
     max-width: 700px;
-    margin: 0 auto;
   }
+
   li {
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     padding: 1.5rem;
   }
 }
 
 @media (max-width: 900px) {
   ul {
-    max-width: 98vw;
-    margin: 0 auto;
+    max-width: 95vw;
   }
+
   li {
     font-size: 1rem;
-    padding: 1rem;
+    padding: 1.25rem;
   }
 }
