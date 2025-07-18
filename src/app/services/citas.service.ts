@@ -7,8 +7,8 @@ import { Medico } from '../models/medico.model';
 import { Paciente } from '../models/paciente.model';
 
 export interface Cita {
-  id?: number;
-  paciente?: Paciente;
+  id: number;
+  paciente?: Paciente | null;
   medico?: Medico;
   pacienteId?: number;
   pacienteNombre?: string;

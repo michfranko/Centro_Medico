@@ -50,12 +50,18 @@ export class AgendaFormComponent implements OnInit, OnChanges, AfterViewInit {
 
   @ViewChild('calendar', { static: false }) calendarDiv!: ElementRef;
   calendar: any;
+  minDate: string;
 
   constructor(
     private fb: FormBuilder,
     private agendaService: AgendaService,
     private ngZone: NgZone
-  ) {}
+  ) {
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    this.minDate = tomorrow.toISOString().split('T')[0];
+  }
 
   ngOnInit(): void {
     this.formAgenda = this.fb.group({
@@ -127,6 +133,9 @@ export class AgendaFormComponent implements OnInit, OnChanges, AfterViewInit {
 
   async guardar() {
     this.mensajeError = '';
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
     if (this.menuOpcion === 'actualizacion' && this.editingAgenda) {
       if (this.formAgenda.valid) {
         const agendaForm = this.formAgenda.value;
@@ -165,6 +174,11 @@ export class AgendaFormComponent implements OnInit, OnChanges, AfterViewInit {
           return;
         }
         let current = new Date(this.fechaInicioMes);
+        const localCurrent = new Date(current.getUTCFullYear(), current.getUTCMonth(), current.getUTCDate());
+        if (localCurrent <= today) {
+          this.mensajeError = 'La fecha de inicio debe ser posterior a la fecha actual.';
+          return;
+        }
         const end = new Date(this.fechaFinMes);
         let agendasCreadas = 0;
         let agendasSolapadas = 0;
@@ -243,6 +257,11 @@ export class AgendaFormComponent implements OnInit, OnChanges, AfterViewInit {
         } else if (this.selectedDates.length > 0) {
           // Crear agendas para cada fecha seleccionada
           for (const fecha of this.selectedDates) {
+            const localFecha = new Date(fecha.getUTCFullYear(), fecha.getUTCMonth(), fecha.getUTCDate());
+            if (localFecha <= today) {
+              this.mensajeError = 'Solo se pueden crear agendas para fechas futuras.';
+              return;
+            }
             const agenda: Agenda = {
               uidMedico: agendaForm.uidMedico,
               fecha: fecha.toISOString().split('T')[0],
@@ -255,6 +274,12 @@ export class AgendaFormComponent implements OnInit, OnChanges, AfterViewInit {
           }
         } else {
           // Crear agenda única
+          const agendaDate = new Date(agendaForm.fecha);
+          const localAgendaDate = new Date(agendaDate.getUTCFullYear(), agendaDate.getUTCMonth(), agendaDate.getUTCDate());
+          if (localAgendaDate <= today) {
+            this.mensajeError = 'Solo se pueden crear agendas para fechas futuras.';
+            return;
+          }
           const agenda: Agenda = {
             ...agendaForm,
             medicoNombre

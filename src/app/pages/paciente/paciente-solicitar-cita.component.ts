@@ -79,7 +79,11 @@ export class PacienteSolicitarCitaComponent implements OnInit {
       .pipe(finalize(() => this.isLoading = false))
       .subscribe({
         next: (agendas: Agenda[]) => {
-          this.agendasDisponibles = agendas.filter(a => a.disponible);
+          const now = new Date();
+          this.agendasDisponibles = agendas.filter(a => {
+            const agendaDate = new Date(`${a.fecha}T${a.horaInicio}`);
+            return a.disponible && agendaDate > now;
+          });
           if (this.agendasDisponibles.length === 0) {
             this.mensaje = 'No hay horarios disponibles para este médico.';
           }
@@ -162,8 +166,12 @@ export class PacienteSolicitarCitaComponent implements OnInit {
 
 
   private onCitaSolicitadaExitosamente(): void {
-    this.mensaje = '✅ Cita solicitada correctamente.';
-    this.notificacionesService.mostrarNotificacion('Cita agendada', 'Su cita ha sido solicitada con éxito', 'success');
+    this.mensaje = '✅ Cita solicitada correctamente. Recibirás una notificación por correo electrónico cuando sea gestionada.';
+    this.notificacionesService.mostrarNotificacion('¡Solicitud Enviada!', 'Recibirás una notificación por correo electrónico cuando tu cita sea gestionada.', 'success');
+    
+    const agendaId = this.form.value.agendaId;
+    this.agendaService.updateDisponibilidadAgenda(agendaId, false).subscribe();
+
     this.form.reset();
     this.agendasDisponibles = [];
     this.nombreMedicoSeleccionado = '';
