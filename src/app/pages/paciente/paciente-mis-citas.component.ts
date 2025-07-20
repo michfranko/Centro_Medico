@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CitasService, Cita } from '../../services/citas.service';
-import { AuthService } from '../../auth/auth.service';
+import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
 
 @Component({

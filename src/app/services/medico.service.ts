@@ -8,7 +8,7 @@ import { Medico } from '../models/medico.model';
   providedIn: 'root'
 })
 export class MedicoService {
-  private apiUrl = 'http://localhost:8081/api/medicos';
+  private apiUrl = 'http://34.59.159.219:8081/api/medicos';
 
   constructor(private http: HttpClient) {}
 
