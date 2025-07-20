@@ -26,7 +26,7 @@ export interface NotificacionResponse {
   providedIn: 'root'
 })
 export class NotificacionesService {
-  private apiUrl = 'http://34.67.68.161:8081/api/notificaciones';
+  private apiUrl = 'http://34.67.44.31:8081/api/notificaciones';
   private snackBarConfig: MatSnackBarConfig = {
     duration: 5000,
     horizontalPosition: 'right',

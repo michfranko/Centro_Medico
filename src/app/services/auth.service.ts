@@ -16,7 +16,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private backendUrl = 'http://34.67.68.161:8081/api/usuarios';
+  private backendUrl = 'http://34.67.44.31:8081/api/usuarios';
 
   constructor(
     private router: Router,

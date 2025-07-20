@@ -10,7 +10,7 @@ import { createUserWithEmailAndPassword, UserCredential } from 'firebase/auth';
 
 @Injectable({ providedIn: 'root' })
 export class UsuarioService {
-  private apiUrl = 'http://34.67.68.161:8081/api/usuarios';
+  private apiUrl = 'http://34.67.44.31:8081/api/usuarios';
 
   constructor(private http: HttpClient, private auth: Auth) {}
 
@@ -90,7 +90,7 @@ export class UsuarioService {
             fecha_nacimiento: usuario.fecha_nacimiento
           };
 
-          this.http.post('http://34.67.68.161:8081/api/auth/register', usuarioParaBackend)
+          this.http.post('http://34.67.44.31:8081/api/auth/register', usuarioParaBackend)
             .subscribe({
               next: (res) => {
                 observer.next(res);

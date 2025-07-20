@@ -9,7 +9,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   providedIn: 'root'
 })
 export class AdminService {
-  private apiUrl = 'http://34.67.68.161:8081/api/admins'; // Cambia a /api/usuarios si tu backend lo maneja así
+  private apiUrl = 'http://34.67.44.31:8081/api/admins'; // Cambia a /api/usuarios si tu backend lo maneja así
 
   constructor(
     private http: HttpClient,

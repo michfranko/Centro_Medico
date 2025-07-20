@@ -7,7 +7,7 @@ import { Agenda } from '../models/agenda.model';
   providedIn: 'root'
 })
 export class AgendaService {
-  private apiUrl = 'http://34.67.68.161:8081/api/agendas';
+  private apiUrl = 'http://34.67.44.31:8081/api/agendas';
 
   constructor(private http: HttpClient) {}
 
@@ -41,7 +41,7 @@ addAgenda(agenda: Agenda): Observable<Agenda> {
   }
 
   getAgendaById(id: number): Observable<any> {
-  return this.http.get<any>(`http://34.67.68.161:8081/api/agendas/${id}`);
+  return this.http.get<any>(`http://34.67.44.31:8081/api/agendas/${id}`);
 }
 
 }

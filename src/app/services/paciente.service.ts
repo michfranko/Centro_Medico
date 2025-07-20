@@ -7,7 +7,7 @@ import { Paciente } from '../models/paciente.model';
   providedIn: 'root'
 })
 export class PacienteService {
-  private apiUrl = 'http://34.67.68.161:8081/api/pacientes';
+  private apiUrl = 'http://34.67.44.31:8081/api/pacientes';
 
   constructor(private http: HttpClient) {}
 
@@ -38,7 +38,7 @@ export class PacienteService {
 
   // Obtener un paciente por UID de Firebase
   getPacienteByUid(uid: string): Observable<Paciente> {
-    return this.http.get<Paciente>(`http://34.67.68.161:8081/api/usuarios/uid/${uid}`);
+    return this.http.get<Paciente>(`http://34.67.44.31:8081/api/usuarios/uid/${uid}`);
   }
 
 
