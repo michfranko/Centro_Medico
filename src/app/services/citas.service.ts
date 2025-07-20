@@ -38,7 +38,7 @@ export interface SolicitudCita {
   providedIn: 'root'
 })
 export class CitasService {
-  private apiUrl = 'http://34.59.159.219:8081/api/citas';
+  private apiUrl = 'http://34.67.68.161:8081/api/citas';
   private retryCount = 2; // Número de reintentos para peticiones GET
 
   constructor(private http: HttpClient) { }
@@ -170,15 +170,15 @@ export class CitasService {
   }
 
 getCitasByPaciente(pacienteId: number): Observable<any[]> {
-  return this.http.get<any[]>(`http://34.59.159.219:8081/api/citas/paciente/${pacienteId}`);
+  return this.http.get<any[]>(`http://34.67.68.161:8081/api/citas/paciente/${pacienteId}`);
 }
 
 getMedicoById(id: number): Observable<any> {
-  return this.http.get<any>(`http://34.59.159.219:8081/api/medicos/${id}`);
+  return this.http.get<any>(`http://34.67.68.161:8081/api/medicos/${id}`);
 }
 
 getAgendaById(id: number): Observable<any> {
-  return this.http.get<any>(`http://34.59.159.219:8081/api/agendas/${id}`);
+  return this.http.get<any>(`http://34.67.68.161:8081/api/agendas/${id}`);
 }
 
   /**
@@ -214,7 +214,7 @@ getAgendaById(id: number): Observable<any> {
       }
     });
 
-    return this.http.get(`http://34.59.159.219:8081/api/reportes/pdf`, { params, responseType: 'blob' });
+    return this.http.get(`http://34.67.68.161:8081/api/reportes/pdf`, { params, responseType: 'blob' });
   }
 
   /**
@@ -230,6 +230,6 @@ getAgendaById(id: number): Observable<any> {
       }
     });
 
-    return this.http.get(`http://34.59.159.219:8081/api/reportes/excel`, { params, responseType: 'blob' });
+    return this.http.get(`http://34.67.68.161:8081/api/reportes/excel`, { params, responseType: 'blob' });
   }
 }
