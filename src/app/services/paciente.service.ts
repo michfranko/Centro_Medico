@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Paciente } from '../models/paciente.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PacienteService {
-  private apiUrl = 'http://34.67.44.31:8081/api/pacientes';
+  private apiUrl = `${environment.apiUrl}/pacientes`;
 
   constructor(private http: HttpClient) {}
 
@@ -38,7 +39,7 @@ export class PacienteService {
 
   // Obtener un paciente por UID de Firebase
   getPacienteByUid(uid: string): Observable<Paciente> {
-    return this.http.get<Paciente>(`http://34.67.44.31:8081/api/usuarios/uid/${uid}`);
+    return this.http.get<Paciente>(`${environment.apiUrl}/usuarios/uid/${uid}`);
   }
 
 

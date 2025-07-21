@@ -3,6 +3,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
+import { environment } from '../../environments/environment';
 
 export interface Notificacion {
   id?: string;
@@ -26,7 +27,7 @@ export interface NotificacionResponse {
   providedIn: 'root'
 })
 export class NotificacionesService {
-  private apiUrl = 'http://34.67.44.31:8081/api/notificaciones';
+  private apiUrl = `${environment.apiUrl}/notificaciones`;
   private snackBarConfig: MatSnackBarConfig = {
     duration: 5000,
     horizontalPosition: 'right',

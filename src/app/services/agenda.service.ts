@@ -2,12 +2,12 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Agenda } from '../models/agenda.model';
-
+import { environment } from '../../environments/environment';
 @Injectable({
   providedIn: 'root'
 })
 export class AgendaService {
-  private apiUrl = 'http://34.67.44.31:8081/api/agendas';
+  private apiUrl = `${environment.apiUrl}/agendas`;
 
   constructor(private http: HttpClient) {}
 
@@ -41,7 +41,7 @@ addAgenda(agenda: Agenda): Observable<Agenda> {
   }
 
   getAgendaById(id: number): Observable<any> {
-  return this.http.get<any>(`http://34.67.44.31:8081/api/agendas/${id}`);
+  return this.http.get<any>(`${environment.apiUrl}/agendas/${id}`);
 }
 
 }

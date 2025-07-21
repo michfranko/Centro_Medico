@@ -13,10 +13,11 @@ import {
   sendPasswordResetEmail,
 } from '@angular/fire/auth';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private backendUrl = 'http://34.67.44.31:8081/api/usuarios';
+  private backendUrl = `${environment.apiUrl}/usuarios`;
 
   constructor(
     private router: Router,

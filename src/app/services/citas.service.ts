@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
 import { Medico } from '../models/medico.model';
 import { Paciente } from '../models/paciente.model';
@@ -38,7 +39,7 @@ export interface SolicitudCita {
   providedIn: 'root'
 })
 export class CitasService {
-  private apiUrl = 'http://34.67.44.31:8081/api/citas';
+  private apiUrl = `${environment.apiUrl}/citas`;
   private retryCount = 2; // Número de reintentos para peticiones GET
 
   constructor(private http: HttpClient) { }
@@ -170,15 +171,15 @@ export class CitasService {
   }
 
 getCitasByPaciente(pacienteId: number): Observable<any[]> {
-  return this.http.get<any[]>(`http://34.67.44.31:8081/api/citas/paciente/${pacienteId}`);
+  return this.http.get<any[]>(`${this.apiUrl}/paciente/${pacienteId}`);
 }
 
 getMedicoById(id: number): Observable<any> {
-  return this.http.get<any>(`http://34.67.44.31:8081/api/medicos/${id}`);
+  return this.http.get<any>(`${environment.apiUrl}/medicos/${id}`);
 }
 
 getAgendaById(id: number): Observable<any> {
-  return this.http.get<any>(`http://34.67.44.31:8081/api/agendas/${id}`);
+  return this.http.get<any>(`${environment.apiUrl}/agendas/${id}`);
 }
 
   /**
@@ -214,7 +215,7 @@ getAgendaById(id: number): Observable<any> {
       }
     });
 
-    return this.http.get(`http://34.67.44.31:8081/api/reportes/pdf`, { params, responseType: 'blob' });
+    return this.http.get(`${environment.apiUrl}/reportes/pdf`, { params, responseType: 'blob' });
   }
 
   /**
@@ -230,6 +231,6 @@ getAgendaById(id: number): Observable<any> {
       }
     });
 
-    return this.http.get(`http://34.67.44.31:8081/api/reportes/excel`, { params, responseType: 'blob' });
+    return this.http.get(`${environment.apiUrl}/reportes/excel`, { params, responseType: 'blob' });
   }
 }

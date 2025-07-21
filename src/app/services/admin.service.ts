@@ -3,13 +3,13 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Administrador } from '../models/admin.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
-
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AdminService {
-  private apiUrl = 'http://34.67.44.31:8081/api/admins'; // Cambia a /api/usuarios si tu backend lo maneja así
+  private apiUrl = `${environment.apiUrl}/admins`; 
 
   constructor(
     private http: HttpClient,
